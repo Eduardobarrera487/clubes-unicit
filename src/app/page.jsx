@@ -1,9 +1,8 @@
-import HeaderLogin from "./_components/header";
-
+import PageLogin from "./pages/Login/page";
 export default function Home() {
   return (
     <div>
-      <HeaderLogin/>
+      <PageLogin/>
       <h1>
       </h1>
     </div>
