@@ -25,7 +25,7 @@ const ClubForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-1/2 mt-3">
+    <div className="flex justify-center items-center min-1/2">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full"
