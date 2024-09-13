@@ -1,12 +1,19 @@
 import MenuCard from "@/app/_components/menuCard";
 import HeaderLogin from "@/app/_components/header";
+import PopularClubs from "@/app/_components/popularClubs";
+import AnunciosFeed from "@/app/_components/anunciosFeed";
+import Footer from "@/app/_components/footer";
 function Page() {
     return (
         <div className="">
-            <div className="mx-8 my-8 grid grid-cols-3 gap-0">
+            <HeaderLogin/>
+            <div className="mx-8 my-8 flex justify-between ">
                 <MenuCard/>
-                <div className="bg-red-500 w-full">Prueba aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaassssssssssssssssssssssss</div>
+                <AnunciosFeed/>
+                <PopularClubs/>
+                
             </div>
+            
             
         </div>
     );
