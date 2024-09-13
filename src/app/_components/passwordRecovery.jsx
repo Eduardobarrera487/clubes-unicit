@@ -21,11 +21,11 @@ const PasswordRecovery = ({ onClose }) => {
     };
 
     return (
-        <div className="relative bg-white p-8 rounded-lg shadow-lg max-w-md w-full py-7">
+        <div className="relative bg-white p-12 rounded-lg shadow-lg max-w-md w-full ">
             {/* Botón de Cierre */}
             <button
                 onClick={onClose}
-                className="absolute mb-1 top-4 right-4 text-red-700 hover:text-red-600 focus:outline-none text-2xl"
+                className="absolute top-3 right-3 text-red-700 hover:text-red-600 focus:outline-none text-2xl"
             >
                 &times;
             </button>
