@@ -100,7 +100,7 @@ const ClubForm = () => {
         {/* Nombre del Entrenador */}
         <div className="mb-4">
           <label htmlFor="coachName" className="block text-gray-700 font-medium mb-2">
-            Nombre del Entrenador
+            Nombre del Encargado
           </label>
           <input
             type="text"
