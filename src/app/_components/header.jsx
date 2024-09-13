@@ -23,8 +23,12 @@ export default function HeaderLogin() {
 
             {/* Barra de navegación */}
             <nav className="flex space-x-5 ">
-                <a className="text-white hover:text-[#FFDF37] hover:cursor-pointer ">Notificaciones </a>
-                <a className="text-white hover:text-[#FFDF37] hover:cursor-pointer " href='/pages/Login'>Salir</a>
+                <Link href='/pages/Login' className="text-white hover:text-[#FFDF37] hover:cursor-pointer ">
+                    Notificiaiones
+                </Link>
+                <Link href='/pages/Login' className="text-white hover:text-[#FFDF37] hover:cursor-pointer ">
+                    Salir
+                </Link>
             </nav>
 
 
