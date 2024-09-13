@@ -3,7 +3,7 @@ import HeaderLogin from "@/app/_components/header";
 import LoginCard from "@/app/_components/loginCard";
 import BackgroundVideo from "@/app/_components/backgroundVideo";
 import CustomCard from "@/app/_components/infoCard";
-import Footer from "@/app/_components/footer";
+import PasswordRecovery from "@/app/_components/passwordRecovery";
 function PageLogin() {
     return (
         <div className="">
@@ -41,10 +41,9 @@ function PageLogin() {
                     <CustomCard imageSrc={"//campusvirtual.unicit.edu.ni/grado/pluginfile.php/1/theme_moove/marketing4icon/1723504507/Botones%20Web_Campus%20Virtual_Biblioteca%20Virtual%20copia%203.png"} url={"http://repositorio.unicit.edu.ni/"}/>
                 </div>
             </section>
-            <footer>
-                <Footer/>
-            </footer>
+            <PasswordRecovery/>
         </div>
+        
     );
 }
 
