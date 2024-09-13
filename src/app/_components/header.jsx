@@ -2,15 +2,15 @@ import Link from 'next/link';
 
 export default function HeaderLogin() {
     return (
-        <header className="h-20 w-full flex items-center justify-around  bg-[#274790]">
+        <header className="h-[30%] py-2 w-full flex items-center justify-around flex-row flex-wrap  bg-[#274790]">
             {/* Logo */}
             <div className="flex items-center">
                 <div className="bg-[url(/logo-unicit.png)] bg-contain bg-no-repeat w-44 h-12">
                 </div>
             </div>
 
-             {/* Barra de búsqueda */}
-             <div className="flex items-center">
+            {/* Barra de búsqueda */}
+            <div className="flex items-center">
                 <input
                     type="text"
                     placeholder="Buscar..."
@@ -23,12 +23,11 @@ export default function HeaderLogin() {
 
             {/* Barra de navegación */}
             <nav className="flex space-x-5 ">
-                    <a className="text-white hover:text-[#FFDF37] hover:cursor-pointer" href='/' >Inicio</a>
-                    <a className="text-white hover:text-[#FFDF37] hover:cursor-pointer">Clubes</a>
-                    <a className="text-white hover:text-[#FFDF37] hover:cursor-pointer ">Usuario</a>
+                <a className="text-white hover:text-[#FFDF37] hover:cursor-pointer ">Notificaciones </a>
+                <a className="text-white hover:text-[#FFDF37] hover:cursor-pointer " href='/pages/Login'>Salir</a>
             </nav>
 
-           
+
         </header>
     );
 }

@@ -2,7 +2,7 @@ import MenuCard from "@/app/_components/menuCard";
 import HeaderLogin from "@/app/_components/header";
 import PopularClubs from "@/app/_components/popularClubs";
 import AnunciosFeed from "@/app/_components/anunciosFeed";
-import Footer from "@/app/_components/footer";
+
 function Page() {
     return (
         <div className="">
@@ -11,10 +11,7 @@ function Page() {
                 <MenuCard/>
                 <AnunciosFeed/>
                 <PopularClubs/>
-                
             </div>
-            
-            
         </div>
     );
 }

@@ -25,7 +25,7 @@ const ClubForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-1/2 mt-3">
+    <div className="flex justify-center items-center min-1/2">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full"
@@ -100,7 +100,7 @@ const ClubForm = () => {
         {/* Nombre del Entrenador */}
         <div className="mb-4">
           <label htmlFor="coachName" className="block text-gray-700 font-medium mb-2">
-            Nombre del Entrenador
+            Nombre del Encargado
           </label>
           <input
             type="text"
