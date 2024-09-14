@@ -18,10 +18,44 @@ const ClubForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí puedes manejar el envío del formulario
-    console.log(formData);
+  
+    // Crear un nuevo objeto FormData
+    const data = new FormData();
+  
+    // Agregar los datos del formulario al objeto FormData
+    data.append('clubName', formData.clubName);
+    data.append('description', formData.description);
+    data.append('coachName', formData.coachName);
+  
+    if (formData.photo) {
+      data.append('photo', formData.photo);
+    }
+  
+    if (formData.banner) {
+      data.append('banner', formData.banner);
+    }
+  
+    try {
+      // Enviar la solicitud POST usando fetch
+      const response = await fetch('http://localhost:1337/api/clubs', {
+        method: 'POST',
+        body: data,
+        headers: {
+          // 'Content-Type': 'multipart/form-data', // No se necesita especificar el Content-Type con fetch
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al crear el club: ' + response.statusText);
+      }
+  
+      const result = await response.json();
+      console.log('Club creado exitosamente:', result);
+    } catch (error) {
+      console.error('Error al crear el club:', error);
+    }
   };
 
   return (
