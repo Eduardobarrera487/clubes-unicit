@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState } from "react";
 
 const ClubForm = () => {
@@ -39,27 +39,32 @@ const ClubForm = () => {
   
     try {
       // Enviar la solicitud POST usando fetch
-      const response = await fetch('http://localhost:1337/api/clubs', {
+      const response = await fetch('http://localhost:8000/club', {
         method: 'POST',
         body: data,
-        headers: {
-          // 'Content-Type': 'multipart/form-data', // No se necesita especificar el Content-Type con fetch
-        },
+        // No es necesario especificar 'Content-Type'
       });
-  
+
+      // Verifica el tipo de respuesta antes de procesarla
+      const contentType = response.headers.get('Content-Type');
       if (!response.ok) {
         throw new Error('Error al crear el club: ' + response.statusText);
       }
-  
-      const result = await response.json();
-      console.log('Club creado exitosamente:', result);
+
+      if (contentType && contentType.includes('application/json')) {
+        const result = await response.json();
+        console.log('Club creado exitosamente:', result);
+      } else {
+        const text = await response.text();
+        console.error('Respuesta inesperada del servidor:', text);
+      }
     } catch (error) {
       console.error('Error al crear el club:', error);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-1/2">
+    <div className="flex justify-center items-center min-h-screen">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full"

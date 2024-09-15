@@ -10,7 +10,7 @@ function PageLogin() {
             <HeaderLogin />
             <main className=" w-full h-[87%] box-border overflow-hidden ">
                 <BackgroundVideo video={"/video_home.mp4"} />
-                <div class=" flex flex-col justify-center h-auto ">
+                <div className=" flex flex-col justify-center h-auto ">
                     <h1 className=" mt-4 font-bold text-white text-6xl text-center text-shadow-2xl w-full h-auto" >
                         ¡Bienvenido a la comunidad de clubes
                     </h1>
@@ -18,7 +18,7 @@ function PageLogin() {
                         UNICIT!
                     </h1>
                 </div>
-                <div class="grid grid-cols-2 ">
+                <div className="grid grid-cols-2 ">
                     <section className="w-full px-7 relative flex flex-col justify-center align-middle">
                         <ul className="w-[80%] relative left-[12.5%]">
                             <li className=" w-[90%] bg-[#274790] flex justify-center text-white py-4 px-4 border border-transparent 
