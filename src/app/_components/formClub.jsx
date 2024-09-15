@@ -3,10 +3,10 @@ import React, { useState } from "react";
 
 const ClubForm = () => {
   const [formData, setFormData] = useState({
-    clubName: "",
     photo: null,
-    banner: null,
     description: "",
+    banner: null,
+    clubName: "",
     coachName: "",
   });
 
