@@ -7,7 +7,7 @@ const RegistroForm = () => {
     password: "",
     email: "",
     photo: null,
-    
+    id: "" // Se agrega el campo id
   });
 
   const handleChange = (e) => {
@@ -28,6 +28,7 @@ const RegistroForm = () => {
     data.append('user', formData.user);
     data.append('password', formData.password);
     data.append('email', formData.email);
+    data.append('id', formData.id); // Se agrega el campo id
   
     if (formData.photo) {
       data.append('photo', formData.photo);
@@ -35,19 +36,24 @@ const RegistroForm = () => {
   
     try {
       // Enviar la solicitud POST usando fetch
-      const response = await fetch('http://localhost:1337/api/clubs', {
+      const response = await fetch('http://localhost:8000/user', {
         method: 'POST',
         body: data,
-        headers: {
-          // 'Content-Type': 'multipart/form-data', // No se necesita especificar el Content-Type con fetch
-        },
       });
-  
-      if (!response.ok) {
-        throw new Error('Error al crear el Usuario: ' + response.statusText);
+
+      // Verificar si la respuesta es JSON o texto
+      const contentType = response.headers.get('content-type');
+      let result;
+
+      if (contentType && contentType.includes('application/json')) {
+        result = await response.json();
+      } else {
+        result = await response.text(); // Si no es JSON, obtener como texto
       }
-  
-      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error('Error al crear el Usuario: ' + result);
+      }
       console.log('Usuario creado exitosamente:', result);
     } catch (error) {
       console.error('Error al crear el Usuario:', error);
@@ -62,7 +68,24 @@ const RegistroForm = () => {
       >
         <h2 className="py-3 rounded-xl text-2xl font-bold mb-6 text-center bg-[#FFDF37] text-[#274790]">Registro de usuario</h2>
 
-        {/* Nombre del Club */}
+        {/* ID del Usuario */}
+        <div className="mb-4">
+          <label htmlFor="id" className="block text-gray-700 font-medium mb-2">
+            ID del Rol
+          </label>
+          <input
+            type="text"
+            name="id"
+            id="id"
+            value={formData.id}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            placeholder="Introduce el ID del usuario"
+          />
+        </div>
+
+        {/* Nombre de Usuario */}
         <div className="mb-4">
           <label htmlFor="user" className="block text-gray-700 font-medium mb-2">
             Nombre de Usuario
@@ -96,13 +119,13 @@ const RegistroForm = () => {
           />
         </div>
 
-        {/* email */}
+        {/* Email */}
         <div className="mb-4">
           <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
             E-mail
           </label>
           <input
-            type="text"
+            type="email"
             name="email"
             id="email"
             value={formData.email}
@@ -128,10 +151,6 @@ const RegistroForm = () => {
             className="w-full text-gray-700 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100"
           />
         </div>
-
-        
-
-        
 
         {/* Botón de Enviar */}
         <button
