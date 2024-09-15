@@ -12,7 +12,7 @@ export default function LoginCard() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:8000/CLUBSUNICITBACKEND/public/index.php/user"); // Reemplaza por la URL de tu API PHP
+        const response = await fetch("http://localhost:8000/ClubsUNICITbackend/public/index.php"); // Reemplaza por la URL de tu API PHP
         const data = await response.json();
         console.log(JSON.stringify(data))
         setUsers(data); // Almacenar los usuarios en el estado
