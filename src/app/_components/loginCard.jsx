@@ -1,11 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PasswordRecovery from "./PasswordRecovery"; // Asegúrate de que la ruta sea correcta
 
 export default function LoginCard() {
   const [isPasswordRecoveryOpen, setIsPasswordRecoveryOpen] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // Función para obtener los usuarios desde la API en PHP
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/CLUBSUNICITBACKEND/public/index.php/user"); // Reemplaza por la URL de tu API PHP
+        const data = await response.json();
+        console.log(JSON.stringify(data))
+        setUsers(data); // Almacenar los usuarios en el estado
+      } catch (error) {
+        console.error("Error al obtener los usuarios:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const togglePasswordRecovery = () => {
     setIsPasswordRecoveryOpen(!isPasswordRecoveryOpen);
+  };
+
+  // Función para manejar el login
+  const handleLogin = (event) => {
+    event.preventDefault(); // Evita el comportamiento por defecto del formulario
+
+    // Verificar si el usuario existe en la lista de usuarios obtenidos
+    const userExists = users.some(user => user.username === username && user.password === password);
+
+    if (userExists) {
+      // Si el usuario existe, mostrar el mensaje en la consola
+      console.log("Acceso concedido");
+      setErrorMessage(''); // Limpiar el mensaje de error si el acceso es correcto
+    } else {
+      // Si el usuario no existe, mostrar un mensaje de error
+      setErrorMessage("Nombre de usuario o contraseña incorrectos.");
+    }
   };
 
   return (
@@ -14,7 +51,7 @@ export default function LoginCard() {
         <div className="mb-6 bg-[#FFDF37] text-[#274790] font-bold text-center py-3 rounded-t-lg">
           Accede a la plataforma
         </div>
-        <form className="mb-0 space-y-6" action="#" method="POST">
+        <form className="mb-0 space-y-6" onSubmit={handleLogin}>
           <div>
             <label htmlFor="username" className="sr-only">
               Nombre de usuario
@@ -39,6 +76,8 @@ export default function LoginCard() {
                 type="text"
                 autoComplete="username"
                 required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 pl-10"
                 placeholder="Nombre de usuario"
               />
@@ -69,12 +108,15 @@ export default function LoginCard() {
                 type="password"
                 autoComplete="current-password"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 pl-10"
                 placeholder="Contraseña"
               />
             </div>
           </div>
 
+          {errorMessage && <div className="text-red-500 text-sm">{errorMessage}</div>}
           <div>
             <button
               type="submit"
