@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 const EventoForm = () => {
   const [formData, setFormData] = useState({
-    tituloAnuncio: "",
+    tituloEvento: "",
     description: "",
     eventDate: "",
     
@@ -16,30 +16,43 @@ const EventoForm = () => {
       [name]: files ? files[0] : value,
     });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Crear un nuevo objeto FormData
+    const data = new FormData();
+
+    // Agregar los datos del formulario al objeto FormData
+    data.append('tituloEvento', formData.tituloEvento);
+
+    data.append('description', formData.description);
+    data.append('eventDate', formData.eventDate);
     try {
       // Enviar la solicitud POST usando fetch
-      const response = await fetch('http://localhost:1337/api/events', {
+      const response = await fetch('http://localhost:8000/announcement', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: data,
       });
 
-      if (!response.ok) {
-        throw new Error('Error al crear el evento: ' + response.statusText);
+      // Verificar si la respuesta es JSON o texto
+      const contentType = response.headers.get('content-type');
+      let result;
+
+      if (contentType && contentType.includes('application/json')) {
+        result = await response.json();
+      } else {
+        result = await response.text(); // Si no es JSON, obtener como texto
       }
 
-      const result = await response.json();
-      console.log('Evento creado exitosamente:', result);
+      if (!response.ok) {
+        throw new Error('Error al crear el anuncio: ' + result);
+      }
+      console.log('Anuncio creado exitosamente:', result);
     } catch (error) {
-      console.error('Error al crear el evento:', error);
+      console.error('Error al crear el Anuncio:', error);
     }
   };
+
 
   return (
     <div className="flex justify-center items-center min-1/2">
@@ -52,14 +65,14 @@ const EventoForm = () => {
 
         {/* Nombre del Club */}
         <div className="mb-4">
-          <label htmlFor="tituloAnuncio" className="block text-gray-700 font-medium mb-2">
+          <label htmlFor="tituloEvento" className="block text-gray-700 font-medium mb-2">
             Titulo del anuncio
           </label>
           <input
             type="text"
-            name="tituloAnuncio"
-            id="tituloAnuncio"
-            value={formData.tituloAnuncio}
+            name="tituloEvento"
+            id="tituloEvento"
+            value={formData.tituloEvento}
             onChange={handleChange}
             required
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"

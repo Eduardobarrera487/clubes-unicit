@@ -5,7 +5,7 @@ const AnuncioForm = () => {
   const [formData, setFormData] = useState({
     tituloAnuncio: "",
     description: "",
-    photo: null,
+    picture: null,
     
   });
 
@@ -22,33 +22,37 @@ const AnuncioForm = () => {
 
     // Crear un nuevo objeto FormData
     const data = new FormData();
-    
+
     // Agregar los datos del formulario al objeto FormData
     data.append('tituloAnuncio', formData.tituloAnuncio);
-    data.append('description', formData.description);
-    
-    if (formData.photo) {
-      data.append('photo', formData.photo);
+    if (formData.picture) {
+      data.append('picture', formData.picture);
     }
 
+    data.append('description', formData.description);
     try {
       // Enviar la solicitud POST usando fetch
-      const response = await fetch('http://localhost:1337/api/anuncios', {
+      const response = await fetch('http://localhost:8000/announcement', {
         method: 'POST',
         body: data,
-        headers: {
-          // 'Content-Type': 'multipart/form-data', // No se necesita especificar el Content-Type con fetch
-        },
       });
 
-      if (!response.ok) {
-        throw new Error('Error al crear el anuncio: ' + response.statusText);
+      // Verificar si la respuesta es JSON o texto
+      const contentType = response.headers.get('content-type');
+      let result;
+
+      if (contentType && contentType.includes('application/json')) {
+        result = await response.json();
+      } else {
+        result = await response.text(); // Si no es JSON, obtener como texto
       }
 
-      const result = await response.json();
+      if (!response.ok) {
+        throw new Error('Error al crear el anuncio: ' + result);
+      }
       console.log('Anuncio creado exitosamente:', result);
     } catch (error) {
-      console.error('Error al crear el anuncio:', error);
+      console.error('Error al crear el Anuncio:', error);
     }
   };
 
@@ -95,13 +99,13 @@ const AnuncioForm = () => {
 
         {/* Subir Foto */}
         <div className="mb-4">
-          <label htmlFor="photo" className="block text-gray-700 font-medium mb-2">
+          <label htmlFor="picture" className="block text-gray-700 font-medium mb-2">
             Subir Foto
           </label>
           <input
             type="file"
-            name="photo"
-            id="photo"
+            name="picture"
+            id="picture"
             onChange={handleChange}
             accept="image/*"
             required
