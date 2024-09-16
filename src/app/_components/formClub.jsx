@@ -3,11 +3,13 @@ import React, { useState } from "react";
 
 const ClubForm = () => {
   const [formData, setFormData] = useState({
-    photo: null,
-    description: "",
+    picture: null,
+    Description: "",
     banner: null,
-    clubName: "",
-    coachName: "",
+    ClubName: "",
+    Coach: "",
+    idAnnouncement: "",
+    idActivities: "",
   });
 
   const handleChange = (e) => {
@@ -20,26 +22,23 @@ const ClubForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Crear un nuevo objeto FormData
     const data = new FormData();
-  
+
     // Agregar los datos del formulario al objeto FormData
-    if (formData.photo) {
-      data.append('photo', formData.photo);
+    if (formData.picture) {
+      data.append('picture', formData.picture);
     }
-    data.append('description', formData.description);
     if (formData.banner) {
       data.append('banner', formData.banner);
     }
-    
-    data.append('clubName', formData.clubName);
+    data.append('Description', formData.Description);
+    data.append('ClubName', formData.ClubName);
+    data.append('Coach', formData.Coach);
+    data.append('idAnnouncement', formData.idAnnouncement);
+    data.append('idActivities', formData.idActivities);
 
-    data.append('coachName', formData.coachName);
-  
-  
-   
-   
     try {
       // Enviar la solicitud POST usando fetch
       const response = await fetch('http://localhost:8000/club', {
@@ -76,14 +75,14 @@ const ClubForm = () => {
 
         {/* Nombre del Club */}
         <div className="mb-4">
-          <label htmlFor="clubName" className="block text-gray-700 font-medium mb-2">
+          <label htmlFor="ClubName" className="block text-gray-700 font-medium mb-2">
             Nombre del Club
           </label>
           <input
             type="text"
-            name="clubName"
-            id="clubName"
-            value={formData.clubName}
+            name="ClubName"
+            id="ClubName"
+            value={formData.ClubName}
             onChange={handleChange}
             required
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -93,13 +92,13 @@ const ClubForm = () => {
 
         {/* Subir Foto */}
         <div className="mb-4">
-          <label htmlFor="photo" className="block text-gray-700 font-medium mb-2">
+          <label htmlFor="picture" className="block text-gray-700 font-medium mb-2">
             Subir Foto
           </label>
           <input
             type="file"
-            name="photo"
-            id="photo"
+            name="picture"
+            id="picture"
             onChange={handleChange}
             accept="image/*"
             required
@@ -125,13 +124,13 @@ const ClubForm = () => {
 
         {/* Descripción */}
         <div className="mb-4">
-          <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
+          <label htmlFor="Description" className="block text-gray-700 font-medium mb-2">
             Descripción
           </label>
           <textarea
-            name="description"
-            id="description"
-            value={formData.description}
+            name="Description"
+            id="Description"
+            value={formData.Description}
             onChange={handleChange}
             required
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -141,18 +140,50 @@ const ClubForm = () => {
 
         {/* Nombre del Entrenador */}
         <div className="mb-4">
-          <label htmlFor="coachName" className="block text-gray-700 font-medium mb-2">
+          <label htmlFor="Coach" className="block text-gray-700 font-medium mb-2">
             Nombre del Encargado
           </label>
           <input
             type="text"
-            name="coachName"
-            id="coachName"
-            value={formData.coachName}
+            name="Coach"
+            id="Coach"
+            value={formData.Coach}
             onChange={handleChange}
             required
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             placeholder="Introduce el nombre del entrenador"
+          />
+        </div>
+
+        {/* ID del Anuncio */}
+        <div className="mb-4">
+          <label htmlFor="idAnnouncement" className="block text-gray-700 font-medium mb-2">
+            ID del Anuncio
+          </label>
+          <input
+            type="number"
+            name="idAnnouncement"
+            id="idAnnouncement"
+            value={formData.idAnnouncement}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            placeholder="Introduce el ID del anuncio"
+          />
+        </div>
+
+        {/* ID de Actividades */}
+        <div className="mb-4">
+          <label htmlFor="idActivities" className="block text-gray-700 font-medium mb-2">
+            ID de Actividades
+          </label>
+          <input
+            type="number"
+            name="idActivities"
+            id="idActivities"
+            value={formData.idActivities}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            placeholder="Introduce el ID de las actividades"
           />
         </div>
 
