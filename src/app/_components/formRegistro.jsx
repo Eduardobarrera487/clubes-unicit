@@ -18,7 +18,7 @@ const RegistroForm = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
   
     // Crear un nuevo objeto FormData
@@ -63,7 +63,7 @@ const RegistroForm = () => {
   return (
     <div className="flex justify-center items-center min-1/2">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleRegister}
         className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full"
       >
         <h2 className="py-3 rounded-xl text-2xl font-bold mb-6 text-center bg-[#FFDF37] text-[#274790]">Registro de usuario</h2>

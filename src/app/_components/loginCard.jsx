@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PasswordRecovery from "./PasswordRecovery"; // Asegúrate de que la ruta sea correcta
+import Link from "next/link";
 
 export default function LoginCard() {
   const [isPasswordRecoveryOpen, setIsPasswordRecoveryOpen] = useState(false);
@@ -142,6 +143,12 @@ export default function LoginCard() {
             className="text-sm text-[#274790] font-medium hover:underline">
             ¿Olvidó su nombre de usuario o contraseña?
           </button>
+          <div>
+          <Link href="/pages/register" className="text-sm text-[#274790] font-medium hover:underline text-center">
+              Si no tienes cuenta, registrate
+            </Link>
+          </div>
+          
         </div>
       </div>
 

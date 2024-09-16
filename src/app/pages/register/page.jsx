@@ -1,6 +1,5 @@
 'use client'
 import RegistroForm from "@/app/_components/formRegistro"
-import Footer from "@/app/_components/footer"
 import BackgroundVideo from "@/app/_components/backgroundVideo"
 import HeaderLogin from "@/app/_components/header"
 export default function Register() {
