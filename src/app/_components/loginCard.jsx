@@ -12,15 +12,22 @@ export default function LoginCard() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:8000/User"); // Reemplaza por la URL de tu API PHP
+        const response = await fetch("http://localhost:8000/login"); // URL de tu API PHP
         const data = await response.json();
-        console.log(JSON.stringify(data))
-        setUsers(data); // Almacenar los usuarios en el estado
+  
+        if (Array.isArray(data)) {
+          setUsers(data); // Almacenar los usuarios en el estado si es un arreglo
+        } else if (data && Array.isArray(data.users)) {
+          setUsers(data.users); // Si los usuarios están dentro de un objeto, accede a la propiedad correcta
+        } else {
+          console.error("Formato inesperado de la respuesta:", data);
+        }
+  
       } catch (error) {
         console.error("Error al obtener los usuarios:", error);
       }
     };
-
+  
     fetchUsers();
   }, []);
 
@@ -29,19 +36,36 @@ export default function LoginCard() {
   };
 
   // Función para manejar el login
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault(); // Evita el comportamiento por defecto del formulario
 
-    // Verificar si el usuario existe en la lista de usuarios obtenidos
-    const userExists = users.some(user => user.username === username && user.password === password);
+    try {
+      const response = await fetch("http://localhost:8000/login", {
+        method: 'POST', // Usar POST para enviar datos de login
+        headers: {
+          'Content-Type': 'application/json', // Especifica que enviamos JSON
+        },
+        body: JSON.stringify({
+          User: username,
+          Password: password
+        })
+      });
 
-    if (userExists) {
-      // Si el usuario existe, mostrar el mensaje en la consola
-      console.log("Acceso concedido");
-      setErrorMessage(''); // Limpiar el mensaje de error si el acceso es correcto
-    } else {
-      // Si el usuario no existe, mostrar un mensaje de error
-      setErrorMessage("Nombre de usuario o contraseña incorrectos.");
+      const data = await response.json();
+
+      if (response.ok) {
+        if (data.message === "Login exitoso") {
+          console.log("Acceso concedido");
+          setErrorMessage('');
+        } else {
+          setErrorMessage(data.message);
+        }
+      } else {
+        setErrorMessage("Error en el servidor.");
+      }
+    } catch (error) {
+      console.error("Error al intentar loguearse:", error);
+      setErrorMessage("Hubo un problema con la solicitud.");
     }
   };
 
@@ -57,7 +81,7 @@ export default function LoginCard() {
               Nombre de usuario
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+              <span className=" qabsolute inset-y-0 left-0 flex items-center pl-3">
                 <svg
                   className="h-5 w-5 text-gray-400"
                   fill="currentColor"
