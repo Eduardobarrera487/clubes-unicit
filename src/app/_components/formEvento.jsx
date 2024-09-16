@@ -29,7 +29,7 @@ const EventoForm = () => {
     data.append('eventDate', formData.eventDate);
     try {
       // Enviar la solicitud POST usando fetch
-      const response = await fetch('http://localhost:8000/announcement', {
+      const response = await fetch('http://localhost:8000/activities', {
         method: 'POST',
         body: data,
       });
@@ -45,11 +45,11 @@ const EventoForm = () => {
       }
 
       if (!response.ok) {
-        throw new Error('Error al crear el anuncio: ' + result);
+        throw new Error('Error al crear el Evento: ' + result);
       }
-      console.log('Anuncio creado exitosamente:', result);
+      console.log('Evento creado exitosamente:', result);
     } catch (error) {
-      console.error('Error al crear el Anuncio:', error);
+      console.error('Error al crear el Evento:', error);
     }
   };
 
