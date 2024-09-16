@@ -1,35 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PasswordRecovery from "./PasswordRecovery"; // Asegúrate de que la ruta sea correcta
 
 export default function LoginCard() {
   const [isPasswordRecoveryOpen, setIsPasswordRecoveryOpen] = useState(false);
-  const [users, setUsers] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
-  // Función para obtener los usuarios desde la API en PHP
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/login"); // URL de tu API PHP
-        const data = await response.json();
-  
-        if (Array.isArray(data)) {
-          setUsers(data); // Almacenar los usuarios en el estado si es un arreglo
-        } else if (data && Array.isArray(data.users)) {
-          setUsers(data.users); // Si los usuarios están dentro de un objeto, accede a la propiedad correcta
-        } else {
-          console.error("Formato inesperado de la respuesta:", data);
-        }
-  
-      } catch (error) {
-        console.error("Error al obtener los usuarios:", error);
-      }
-    };
-  
-    fetchUsers();
-  }, []);
 
   const togglePasswordRecovery = () => {
     setIsPasswordRecoveryOpen(!isPasswordRecoveryOpen);
@@ -37,28 +13,38 @@ export default function LoginCard() {
 
   // Función para manejar el login
   const handleLogin = async (event) => {
-    event.preventDefault(); // Evita el comportamiento por defecto del formulario
+    event.preventDefault();
+
+    console.log("Datos que se enviarán al servidor:", {
+      User: username,
+      Password: password,
+    });
 
     try {
-      const response = await fetch("http://localhost:8000/login", {
-        method: 'POST', // Usar POST para enviar datos de login
+      const response = await fetch("http://localhost:8000/login", { // Asume que tu API está en /api/login
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // Especifica que enviamos JSON
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           User: username,
-          Password: password
-        })
+          Password: password,
+        }),
       });
 
-      const data = await response.json();
+      // Imprime la respuesta en la consola del navegador
+      const responseData = await response.json();
+      console.log("Datos recibidos del servidor:", responseData);
 
       if (response.ok) {
-        if (data.message === "Login exitoso") {
+        if (responseData.success && responseData.message === "Login exitoso") {
           console.log("Acceso concedido");
           setErrorMessage('');
+          
+          // Redirige al usuario a la página de inicio (o a la página deseada)
+          window.location.href = '/pages/Inicio'; // Cambia '/home' a la ruta deseada
         } else {
-          setErrorMessage(data.message);
+          setErrorMessage(responseData.message);
         }
       } else {
         setErrorMessage("Error en el servidor.");
@@ -81,7 +67,7 @@ export default function LoginCard() {
               Nombre de usuario
             </label>
             <div className="relative">
-              <span className=" qabsolute inset-y-0 left-0 flex items-center pl-3">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                 <svg
                   className="h-5 w-5 text-gray-400"
                   fill="currentColor"
@@ -159,7 +145,6 @@ export default function LoginCard() {
         </div>
       </div>
 
-      {/* Mostrar el componente PasswordRecovery si isPasswordRecoveryOpen es true */}
       {isPasswordRecoveryOpen && (
         <div className="absolute inset-0 bg-white z-50 flex justify-center items-center">
           <PasswordRecovery onClose={togglePasswordRecovery} />
