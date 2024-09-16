@@ -25,41 +25,44 @@ const ClubForm = () => {
     const data = new FormData();
   
     // Agregar los datos del formulario al objeto FormData
-    data.append('clubName', formData.clubName);
-    data.append('description', formData.description);
-    data.append('coachName', formData.coachName);
-  
     if (formData.photo) {
       data.append('photo', formData.photo);
     }
-  
+    data.append('description', formData.description);
     if (formData.banner) {
       data.append('banner', formData.banner);
     }
+    
+    data.append('clubName', formData.clubName);
+
+    data.append('coachName', formData.coachName);
   
+  
+   
+   
     try {
       // Enviar la solicitud POST usando fetch
       const response = await fetch('http://localhost:8000/club', {
         method: 'POST',
         body: data,
-        // No es necesario especificar 'Content-Type'
       });
 
-      // Verifica el tipo de respuesta antes de procesarla
-      const contentType = response.headers.get('Content-Type');
-      if (!response.ok) {
-        throw new Error('Error al crear el club: ' + response.statusText);
-      }
+      // Verificar si la respuesta es JSON o texto
+      const contentType = response.headers.get('content-type');
+      let result;
 
       if (contentType && contentType.includes('application/json')) {
-        const result = await response.json();
-        console.log('Club creado exitosamente:', result);
+        result = await response.json();
       } else {
-        const text = await response.text();
-        console.error('Respuesta inesperada del servidor:', text);
+        result = await response.text(); // Si no es JSON, obtener como texto
       }
+
+      if (!response.ok) {
+        throw new Error('Error al crear el Club: ' + result);
+      }
+      console.log('Club creado exitosamente:', result);
     } catch (error) {
-      console.error('Error al crear el club:', error);
+      console.error('Error al crear el Club:', error);
     }
   };
 
