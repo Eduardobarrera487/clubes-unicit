@@ -43,7 +43,7 @@ export default function LoginCard() {
           setErrorMessage('');
           
           // Redirige al usuario a la página de inicio (o a la página deseada)
-          window.location.href = '/pages/Inicio'; // Cambia '/home' a la ruta deseada
+          window.location.href = '/pages/inicio'; // Cambia '/home' a la ruta deseada
         } else {
           setErrorMessage(responseData.message);
         }

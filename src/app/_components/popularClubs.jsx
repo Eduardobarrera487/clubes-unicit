@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -11,7 +12,7 @@ function PopularClubs({ userId }) {
     const fetchClubs = async () => {
       try {
         // Cambiar la URL para que apunte a tu API donde obtienes los clubes del usuario
-        const response = await fetch(`http://localhost:8000/user_clubs?user_id=${userId}`);
+        const response = await fetch(`http://localhost:8000/user_clubs?user_id=${IdUser}`);
         
         if (!response.ok) {
           throw new Error('Error al obtener los clubes');
@@ -58,11 +59,11 @@ function PopularClubs({ userId }) {
                 >
                   {/* Cambiar el src de la imagen para que sea dinámico */}
                   <img
-                    src={club.logo ? club.logo : "/default-club-logo.png"} // Usar una imagen por defecto si no tiene logo
-                    alt={`${club.club_name} logo`}
+                    src={club.Picture ? club.Picture : "/default-club-logo.png"} // Usar una imagen por defecto si no tiene logo
+                    alt={`${club.ClubName} logo`}
                     className="h-10 w-10"
                   />
-                  <span>{club.club_name}</span>
+                  <span>{club.ClubName}</span>
                 </Link>
               </li>
             ))
