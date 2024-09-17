@@ -15,14 +15,8 @@ export default function LoginCard() {
   // Función para manejar el login
   const handleLogin = async (event) => {
     event.preventDefault();
-
-    console.log("Datos que se enviarán al servidor:", {
-      User: username,
-      Password: password,
-    });
-
     try {
-      const response = await fetch("http://localhost:8000/login", { // Asume que tu API está en /api/login
+      const response = await fetch("http://localhost:8000/login", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,9 +25,9 @@ export default function LoginCard() {
           User: username,
           Password: password,
         }),
+        credentials: 'include'
       });
 
-      // Imprime la respuesta en la consola del navegador
       const responseData = await response.json();
       console.log("Datos recibidos del servidor:", responseData);
 
@@ -41,9 +35,9 @@ export default function LoginCard() {
         if (responseData.success && responseData.message === "Login exitoso") {
           console.log("Acceso concedido");
           setErrorMessage('');
-          
-          // Redirige al usuario a la página de inicio (o a la página deseada)
-          window.location.href = '/pages/inicio'; // Cambia '/home' a la ruta deseada
+
+          // Redirige al usuario a la página de inicio
+          window.location.href = '/pages/Inicio'; // Cambia '/Inicio' a la ruta deseada
         } else {
           setErrorMessage(responseData.message);
         }
@@ -51,7 +45,7 @@ export default function LoginCard() {
         setErrorMessage("Error en el servidor.");
       }
     } catch (error) {
-      console.error("Error al intentar loguearse:", error);
+      console.log("Error al intentar loguearse:", error);
       setErrorMessage("Hubo un problema con la solicitud.");
     }
   };
@@ -144,11 +138,10 @@ export default function LoginCard() {
             ¿Olvidó su nombre de usuario o contraseña?
           </button>
           <div>
-          <Link href="/pages/register" className="text-sm text-[#274790] font-medium hover:underline text-center">
+            <Link href="/pages/register" className="text-sm text-[#274790] font-medium hover:underline text-center">
               Si no tienes cuenta, registrate
             </Link>
           </div>
-          
         </div>
       </div>
 
