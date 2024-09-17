@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
-function PopularClubs({ userId }) {
+function PopularClubs() {
   const [clubs, setClubs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,26 +11,27 @@ function PopularClubs({ userId }) {
   useEffect(() => {
     const fetchClubs = async () => {
       try {
-        // Cambiar la URL para que apunte a tu API donde obtienes los clubes del usuario
-        const response = await fetch(`http://localhost:8000/user_clubs?user_id=${IdUser}`);
-        
-        if (!response.ok) {
-          throw new Error('Error al obtener los clubes');
-        }
-        
+        const response = await fetch('http://localhost:8000/user-clubs');
         const data = await response.json();
-        setClubs(data);
+
+        console.log("Datos obtenidos del backend:", data);
+
+        if (data.success && Array.isArray(data.clubs)) {
+          setClubs(data.clubs);
+        } else {
+          console.log("Respuesta no válida o clubs no es un array", data);
+          setClubs([]);
+        }
       } catch (err) {
+        console.error("Error en la solicitud:", err.message);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    if (userId) {
-      fetchClubs(); // Ejecutar la función solo si hay un userId disponible
-    }
-  }, [userId]);
+    fetchClubs(); // Ejecutar la función para obtener los clubes al cargar el componente
+  }, []);
 
   // Mostrar un mensaje de carga mientras los datos se están obteniendo
   if (loading) {
@@ -49,17 +50,16 @@ function PopularClubs({ userId }) {
       </div>
       <div className="divide-y dark:divide-gray-300">
         <ul className="pt-2 pb-4 space-y-1 text-sm">
-          {clubs.length > 0 ? (
+          {Array.isArray(clubs) && clubs.length > 0 ? (
             clubs.map((club) => (
-              <li key={club.id} className="dark:bg-gray-100 dark:text-gray-900">
+              <li key={club.IdClub} className="dark:bg-gray-100 dark:text-gray-900">
                 <Link
                   rel="noopener noreferrer"
-                  href={`/club/${club.id}`} // Cambiar el enlace para dirigir a la página del club
+                  href={`/club/${club.IdClub}`} // Asegúrate de que IdClub es correcto
                   className="flex items-center p-2 space-x-3 rounded-md"
                 >
-                  {/* Cambiar el src de la imagen para que sea dinámico */}
                   <img
-                    src={club.Picture ? club.Picture : "/default-club-logo.png"} // Usar una imagen por defecto si no tiene logo
+                    src={club.Picture ? club.Picture : "/default-club-logo.png"} // Imagen por defecto si no tiene logo
                     alt={`${club.ClubName} logo`}
                     className="h-10 w-10"
                   />
@@ -71,6 +71,7 @@ function PopularClubs({ userId }) {
             <p>No perteneces a ningún club.</p>
           )}
         </ul>
+
       </div>
     </div>
   );

@@ -1,14 +1,62 @@
-import React from "react";
+'use client'
+import React, { useEffect, useState } from 'react';
+
 import Link from "next/link";
 
 function MenuCard() {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/check-auth', {
+                    method: 'GET',
+                    credentials: 'include',
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al obtener los datos del usuario');
+                }
+
+                const data = await response.json();
+
+                if (data.authenticated) {
+                    setUser(data);
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
+
+    if (!user) {
+        return <div>No estás autenticado</div>;
+    }
+
+
   return (
     <div className="h-full p-3 space-y-2 w-60 dark:bg-gray-50 dark:text-gray-800  rounded-md shadow-lg">
         <div className="flex items-center p-2 space-x-4">
-            <img src="https://source.unsplash.com/100x100/?portrait" alt="" className="w-12 h-12 rounded-full dark:bg-gray-500" />
+            <img src="Foto del usuario" alt="" className="w-12 h-12 rounded-full dark:bg-gray-500" />
             <div>
-                <h2 className="text-lg font-semibold">Leroy Jenkins</h2>
-            </div>
+                    <h2 className="text-lg font-semibold">{user.username}</h2>
+                </div>
         </div>
         <div className="divide-y dark:divide-gray-300">
             <ul className="pt-2 pb-4 space-y-1 text-sm">

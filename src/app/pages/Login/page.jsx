@@ -1,5 +1,5 @@
 "use client";
-import HeaderLogin from "@/app/_components/header";
+import HeaderLogin from "@/app/_components/headerlogin";
 import LoginCard from "@/app/_components/loginCard";
 import BackgroundVideo from "@/app/_components/backgroundVideo";
 import CustomCard from "@/app/_components/infoCard";

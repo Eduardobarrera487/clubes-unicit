@@ -1,4 +1,3 @@
-'use client'
 import React, { useState } from "react";
 
 const RegistroForm = () => {
@@ -6,9 +5,12 @@ const RegistroForm = () => {
     user: "",
     password: "",
     email: "",
-    photo: null,
-    id: "" // Se agrega el campo id
+    picture: null,
+    id: ""
   });
+  
+  const [responseMessage, setResponseMessage] = useState(null);
+  const [isError, setIsError] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -20,43 +22,53 @@ const RegistroForm = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-  
-    // Crear un nuevo objeto FormData
+
+    if (!formData.email.endsWith('unicit.edu.ni')) {
+      setIsError(true);
+      setResponseMessage('El email debe contener el dominio unicit.edu.ni');
+      return;}
+
     const data = new FormData();
-  
-    // Agregar los datos del formulario al objeto FormData
     data.append('user', formData.user);
     data.append('password', formData.password);
     data.append('email', formData.email);
-    data.append('id', formData.id); // Se agrega el campo id
-  
+    data.append('id', formData.id);
+
     if (formData.photo) {
       data.append('photo', formData.photo);
     }
-  
+
     try {
-      // Enviar la solicitud POST usando fetch
       const response = await fetch('http://localhost:8000/user', {
         method: 'POST',
         body: data,
       });
 
-      // Verificar si la respuesta es JSON o texto
       const contentType = response.headers.get('content-type');
       let result;
 
       if (contentType && contentType.includes('application/json')) {
-        result = await response.json();
+        result = await response.text();
       } else {
-        result = await response.text(); // Si no es JSON, obtener como texto
+        result = await response.text();
       }
 
       if (!response.ok) {
-        throw new Error('Error al crear el Usuario: ' + result);
+        setIsError(true);
+        setResponseMessage('Error al crear el Usuario: ' + result);
+        console('Error al crear el Usuario: ' + result);
+      } else {
+        setIsError(false);
+        setResponseMessage('Usuario creado exitosamente');
+        
+        // Redirigir después de 1 segundo
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
       }
-      console.log('Usuario creado exitosamente:', result);
     } catch (error) {
-      console.error('Error al crear el Usuario:', error);
+      setIsError(true);
+      setResponseMessage('Error al crear el Usuario: ' + error.message);
     }
   };
 
@@ -159,6 +171,13 @@ const RegistroForm = () => {
         >
           Registrarme
         </button>
+
+        {/* Mostrar el mensaje de respuesta */}
+        {responseMessage && (
+          <p className={`text-center text-shadow-lg pt-3 ${isError ? 'text-red-500' : 'text-green-700'}`}>
+            {responseMessage}
+          </p>
+        )}
       </form>
     </div>
   );
