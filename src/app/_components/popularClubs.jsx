@@ -68,7 +68,7 @@ function PopularClubs() {
               <li key={club.IdClub} className="dark:bg-gray-100 dark:text-gray-900">
                 <Link
                   rel="noopener noreferrer"
-                  href={`/club/${club.IdClub}`}
+                  href={`/pages/club`}
                   className="flex items-center p-2 space-x-3 rounded-md"
                 >
                   <img
