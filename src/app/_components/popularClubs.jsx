@@ -14,28 +14,39 @@ function PopularClubs() {
           method: 'GET',
           credentials: 'include'
         });
-        
+
         if (response.ok) {
-          const data = await response.text(); // Convertir la respuesta a JSON
-          if (data.success) {
-            setClubs(data.clubs); 
-            console.log(data)// Establecer los clubes en el estado
-          } else {
-            setError(data.message); // Establecer el mensaje de error en el estado
+          const text = await response.text(); // Obtener la respuesta como texto
+          console.log('Texto de la respuesta:', text); // Ver el texto completo
+
+          try {
+            const data = JSON.parse(text); // Intentar parsear el JSON
+            console.log('Respuesta del servidor:', data);
+
+            if (data.success) {
+              setClubs(data.clubs);
+            } else {
+              setError(data.message);
+            }
+          } catch (err) {
+            console.error('Error al parsear JSON:', err);
+            setError('Error al procesar la respuesta del servidor');
           }
         } else {
           throw new Error('Error al obtener los clubes');
         }
       } catch (err) {
         console.error('Error fetching clubs:', err);
-        setError(err.message); // Establecer el mensaje de error en el estado
+        setError(err.message);
       } finally {
-        setLoading(false); // Cambiar a false en cualquier caso
+        setLoading(false);
       }
     };
 
-    fetchClubs(); // Ejecutar la función para obtener los clubes al cargar el componente
+    fetchClubs();
   }, []);
+
+
 
   if (loading) {
     return <div>Cargando...</div>; // Mensaje de carga
@@ -57,11 +68,11 @@ function PopularClubs() {
               <li key={club.IdClub} className="dark:bg-gray-100 dark:text-gray-900">
                 <Link
                   rel="noopener noreferrer"
-                  href={`/club/${club.IdClub}`} // Enlace a la página del club
+                  href={`/pages/club`}
                   className="flex items-center p-2 space-x-3 rounded-md"
                 >
                   <img
-                    src={club.Picture ? club.Picture : "/default-club-logo.png"} // Imagen por defecto si no hay logo
+                    src={club.Picture ? club.Picture : "/default-club-logo.png"}
                     alt={`${club.ClubName} logo`}
                     className="h-10 w-10"
                   />
@@ -76,6 +87,7 @@ function PopularClubs() {
       </div>
     </div>
   );
+
 }
 
 export default PopularClubs;
