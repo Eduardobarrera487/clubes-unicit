@@ -45,7 +45,7 @@ function Page() {
     }
 
     return (
-        <div className="">
+        <div>
             <HeaderLogin />
             <div className="mx-8 my-8 flex justify-between ">
                 <MenuCard />

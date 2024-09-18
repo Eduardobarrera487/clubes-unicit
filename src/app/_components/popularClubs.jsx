@@ -7,40 +7,42 @@ function PopularClubs() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Función para obtener los clubes desde el backend
   useEffect(() => {
     const fetchClubs = async () => {
       try {
-        const response = await fetch('http://localhost:8000/user-clubs');
-        const data = await response.json();
-
-        console.log("Datos obtenidos del backend:", data);
-
-        if (data.success && Array.isArray(data.clubs)) {
-          setClubs(data.clubs);
+        const response = await fetch('http://localhost:8000/user-clubs', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          const data = await response.text(); // Convertir la respuesta a JSON
+          if (data.success) {
+            setClubs(data.clubs); 
+            console.log(data)// Establecer los clubes en el estado
+          } else {
+            setError(data.message); // Establecer el mensaje de error en el estado
+          }
         } else {
-          console.log("Respuesta no válida o clubs no es un array", data);
-          setClubs([]);
+          throw new Error('Error al obtener los clubes');
         }
       } catch (err) {
-        console.error("Error en la solicitud:", err.message);
-        setError(err.message);
+        console.error('Error fetching clubs:', err);
+        setError(err.message); // Establecer el mensaje de error en el estado
       } finally {
-        setLoading(false);
+        setLoading(false); // Cambiar a false en cualquier caso
       }
     };
 
     fetchClubs(); // Ejecutar la función para obtener los clubes al cargar el componente
   }, []);
 
-  // Mostrar un mensaje de carga mientras los datos se están obteniendo
   if (loading) {
-    return <div>Cargando...</div>;
+    return <div>Cargando...</div>; // Mensaje de carga
   }
 
-  // Mostrar un mensaje de error en caso de que ocurra algún problema
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Error: {error}</div>; // Mensaje de error
   }
 
   return (
@@ -55,11 +57,11 @@ function PopularClubs() {
               <li key={club.IdClub} className="dark:bg-gray-100 dark:text-gray-900">
                 <Link
                   rel="noopener noreferrer"
-                  href={`/club/${club.IdClub}`} // Asegúrate de que IdClub es correcto
+                  href={`/club/${club.IdClub}`} // Enlace a la página del club
                   className="flex items-center p-2 space-x-3 rounded-md"
                 >
                   <img
-                    src={club.Picture ? club.Picture : "/default-club-logo.png"} // Imagen por defecto si no tiene logo
+                    src={club.Picture ? club.Picture : "/default-club-logo.png"} // Imagen por defecto si no hay logo
                     alt={`${club.ClubName} logo`}
                     className="h-10 w-10"
                   />
@@ -71,7 +73,6 @@ function PopularClubs() {
             <p>No perteneces a ningún club.</p>
           )}
         </ul>
-
       </div>
     </div>
   );
