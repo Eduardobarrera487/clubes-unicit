@@ -57,7 +57,7 @@ function PopularClubs() {
   }
 
   return (
-    <div className="h-full p-3 space-y-2 w-60 dark:bg-gray-50 dark:text-gray-800 rounded-md shadow-lg">
+    <div className="h-full p-3 space-y-2 w-[80%] dark:bg-gray-50 dark:text-gray-800 rounded-md shadow-lg">
       <div className="mb-6 bg-[#FFDF37] text-[#274790] font-bold text-center py-3 rounded-t-lg">
         <h2>Mis Clubes</h2>
       </div>
@@ -68,7 +68,7 @@ function PopularClubs() {
               <li key={club.IdClub} className="dark:bg-gray-100 dark:text-gray-900">
                 <Link
                   rel="noopener noreferrer"
-                  href={`/pages/club`}
+                  href={`/pages/club/${club.IdClub}`}
                   className="flex items-center p-2 space-x-3 rounded-md"
                 >
                   <img

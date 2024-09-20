@@ -47,10 +47,14 @@ function Page() {
     return (
         <div>
             <HeaderLogin />
-            <div className="mx-8 my-8 flex justify-between ">
-                <MenuCard />
-                <AnunciosFeed />
-                <PopularClubs />
+            <div className="p-10 flex flex-row flex-wrap  w-full ">
+
+                <div className='w-[30%]  flex flex-row flex-wrap justify-center relative'><MenuCard /></div>
+                <div className='w-[37%] flex flex-row flex-wrap p-0 justify-center '><AnunciosFeed /></div>
+                <div className='w-[30%] flex flex-row flex-wrap justify-end'><PopularClubs /></div>
+                
+                
+                
             </div>
         </div>
     );
