@@ -108,7 +108,7 @@ function Page({ params }) {
           <section className="bg-white p-6 rounded shadow-md mb-8">
             <div className="flex items-center">
               {/* Imagen del club */}
-              <img src={club.Picture} alt=""  className="w-16 h-16 rounded-full mr-4" />
+              <img src={club.Picture} alt="" className="w-16 h-16 rounded-full mr-4" />
               <h2 className="text-2xl">{club.ClubName}</h2>
             </div>
           </section>
@@ -134,6 +134,7 @@ function Page({ params }) {
           </section>
         </main>
       </div>
+
       {/* Modal para Anuncio */}
       {isAnuncioFormOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -159,12 +160,14 @@ function Page({ params }) {
             >
               &times;
             </button>
-            <EventoForm />
+            <EventoForm clubId={clubId} /> {/* Aquí pasamos el clubId */}
           </div>
         </div>
       )}
     </div>
-
   );
+
+
+
 }
 export default Page;
