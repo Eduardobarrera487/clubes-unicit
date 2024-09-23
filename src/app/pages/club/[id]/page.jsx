@@ -5,6 +5,7 @@ import MenuCard from "@/app/_components/menuCard";
 import AnuncioForm from "@/app/_components/formAnuncio";
 import EventoForm from "@/app/_components/formEvento";
 import EventoCard from "@/app/_components/eventoCard"; // Importar componente EventoCard
+import ClubSettingsForm from '@/app/_components/ClubSettingsForm'; // Importar ClubSettingsForm
 
 function Page({ params }) {
   const clubId = params.id;
@@ -15,6 +16,12 @@ function Page({ params }) {
   const [isAnuncioFormOpen, setIsAnuncioFormOpen] = useState(false);
   const [isEventoFormOpen, setIsEventoFormOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("anuncios"); // Estado para el tab activo
+  const [isClubSettingsOpen, setIsClubSettingsOpen] = useState(false); // Estado para ClubSettingsForm
+
+  // Función para abrir/cerrar el formulario de ajustes del club
+  const toggleClubSettingsForm = () => {
+    setIsClubSettingsOpen(!isClubSettingsOpen);
+  };
 
   const toggleAnuncioForm = () => {
     setIsAnuncioFormOpen(!isAnuncioFormOpen);
@@ -22,6 +29,40 @@ function Page({ params }) {
 
   const toggleEventoForm = () => {
     setIsEventoFormOpen(!isEventoFormOpen);
+  };
+
+  // Función para guardar los cambios del club
+  const handleSaveClubSettings = async (updatedValues) => {
+    console.log('Guardando ajustes del club:', updatedValues);
+    try {
+      const response = await fetch(`http://localhost:8000/club`, {
+        method: 'PUT', // Asumiendo que usas PUT para actualizar
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedValues),
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const updatedClub = await response.text();
+        console.log('Club actualizado:', updatedClub);
+        // Actualizar el estado local de clubs
+        setClubs((prevClubs) =>
+          prevClubs.map((club) =>
+            club.IdClub === clubId ? updatedClub : club
+          )
+        );
+        // Opcional: Mostrar una notificación de éxito
+        alert('Ajustes del club actualizados correctamente.');
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al actualizar el club');
+      }
+    } catch (err) {
+      console.log('Error al guardar ajustes del club:', err);
+      console.log(`Error: ${err.message}`);
+    }
   };
 
   // Fetch de clubes
@@ -62,38 +103,6 @@ function Page({ params }) {
     };
 
     fetchUserClubs();
-  }, []);
-  useEffect(() => {
-    const fetchClubs = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/club', {
-          method: 'GET',
-          credentials: 'include'
-        });
-
-        if (response.ok) {
-          const text = await response.text();
-          try {
-            const data = JSON.parse(text);
-            if (data) {
-              setClubs(data);
-            }
-          } catch (err) {
-            console.error('Error al parsear JSON:', err);
-            setError('Error al procesar la respuesta del servidor');
-          }
-        } else {
-          throw new Error('Error al obtener los clubes');
-        }
-      } catch (err) {
-        console.error('Error fetching clubs:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchClubs();
   }, []);
 
   // Fetch de eventos
@@ -153,8 +162,11 @@ function Page({ params }) {
             <button onClick={toggleEventoForm} className="bg-blue-600 text-white py-2 px-4 rounded mb-4 w-full">
               Añadir evento
             </button>
-            <button onClick={toggleAnuncioForm} className="bg-blue-600 text-white py-2 px-4 rounded w-full">
+            <button onClick={toggleAnuncioForm} className="bg-blue-600 text-white py-2 px-4 rounded mb-4 w-full">
               Anunciar
+            </button>
+            <button onClick={toggleClubSettingsForm} className="bg-green-600 text-white py-2 px-4 rounded w-full">
+              Ajustes del Club
             </button>
           </div>
         </div>
@@ -163,13 +175,23 @@ function Page({ params }) {
         <main className="w-4/5 p-8">
           {/* Banner */}
           <section className="bg-gray-200 h-32 rounded mb-8 flex items-center justify-center">
-            <img src={club?.Banner} alt="" />
+            {club?.Banner ? (
+              <img src={club.Banner} alt="Banner del Club" className="w-full h-full object-cover rounded" />
+            ) : (
+              <p>No hay banner disponible</p>
+            )}
           </section>
 
           {/* Información del club */}
           <section className="bg-white p-6 rounded shadow-md mb-8">
             <div className="flex items-center">
-              <img src={club?.Picture} alt="" className="w-16 h-16 rounded-full mr-4" />
+              {club?.Picture ? (
+                <img src={club.Picture} alt="Foto del Club" className="w-16 h-16 rounded-full mr-4" />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-gray-300 mr-4 flex items-center justify-center">
+                  <span className="text-gray-700">No Image</span>
+                </div>
+              )}
               <h2 className="text-2xl">{club?.ClubName}</h2>
             </div>
           </section>
@@ -220,10 +242,13 @@ function Page({ params }) {
                     <p>{club?.Coach || 'Encargado no disponible'}</p>
                   </div>
 
- {/*                  <div className="mb-4">
+                  {/* Puedes descomentar si deseas mostrar el número de miembros */}
+                  {/*
+                  <div className="mb-4">
                     <h4 className="font-semibold">Número de miembros:</h4>
                     <p>{club?.MembersCount || 'No disponible'}</p>
-                  </div> */}
+                  </div>
+                  */}
 
                   {/* Agrega más detalles del club según sea necesario */}
                 </div>
@@ -284,6 +309,16 @@ function Page({ params }) {
             <EventoForm clubId={clubId} />
           </div>
         </div>
+      )}
+
+      {/* Modal para Ajustes del Club */}
+      {isClubSettingsOpen && (
+        <ClubSettingsForm
+          isOpen={isClubSettingsOpen}
+          onClose={toggleClubSettingsForm}
+          clubData={club}
+          onSave={handleSaveClubSettings}
+        />
       )}
     </div>
   );
