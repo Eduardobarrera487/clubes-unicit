@@ -6,7 +6,7 @@ import AnuncioForm from "@/app/_components/formAnuncio";
 import EventoForm from "@/app/_components/formEvento";
 import EventoCard from "@/app/_components/eventoCard"; // Importar componente EventoCard
 import ClubSettingsForm from '@/app/_components/ClubSettingsForm'; // Importar ClubSettingsForm
-
+//Si
 function Page({ params }) {
   const clubId = params.id;
   const [clubs, setClubs] = useState([]);
