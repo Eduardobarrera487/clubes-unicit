@@ -36,24 +36,24 @@ function Page({ params }) {
     console.log('Guardando ajustes del club:', updatedValues);
     try {
       const response = await fetch(`http://localhost:8000/club`, {
-        method: 'PUT', // Asumiendo que usas PUT para actualizar
+        method: 'PUT', // Asegúrate de que usas PUT para actualizar
+        body: JSON.stringify({ idClub: clubId, ...updatedValues }), // Agrega clubId a los valores actualizados
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updatedValues),
         credentials: 'include',
       });
 
       if (response.ok) {
-        const updatedClub = await response.text();
+        const updatedClub = await response.json(); // Cambia a json() para procesar correctamente la respuesta
         console.log('Club actualizado:', updatedClub);
+
         // Actualizar el estado local de clubs
         setClubs((prevClubs) =>
           prevClubs.map((club) =>
             club.IdClub === clubId ? updatedClub : club
           )
         );
-        // Opcional: Mostrar una notificación de éxito
         alert('Ajustes del club actualizados correctamente.');
       } else {
         const errorData = await response.json();
@@ -243,7 +243,7 @@ function Page({ params }) {
                   </div>
 
                   {/* Puedes descomentar si deseas mostrar el número de miembros */}
-                  {/*
+                  {/* 
                   <div className="mb-4">
                     <h4 className="font-semibold">Número de miembros:</h4>
                     <p>{club?.MembersCount || 'No disponible'}</p>

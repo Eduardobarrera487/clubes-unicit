@@ -34,7 +34,7 @@ function ClubSettingsForm({ isOpen, onClose, clubData, onSave }) {
           <button onClick={onClose} className="bg-gray-200 text-gray-600 py-1 px-2 rounded">Cancelar</button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} encType='multipart/form-data'>
           <div className="mb-4">
             <label htmlFor="clubName" className="block text-gray-700 font-semibold">Nombre del grupo</label>
             <input
