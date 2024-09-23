@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
+function Skeleton() {
+    return (
+        <div className="py-10 w-full">
+            <h2 className="text-2xl font-bold mb-4 animate-pulse bg-gray-300 h-8 w-1/4"></h2>
+            <ul className='w-full flex flex-col gap-5'>
+                {[...Array(3)].map((_, index) => (
+                    <li key={index} className="bg-gray-300 animate-pulse rounded-lg p-4 h-24"></li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
 function AnunciosFeed() {
     const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -35,7 +48,7 @@ function AnunciosFeed() {
     }, []);
 
     if (loading) {
-        return <p>Cargando anuncios...</p>;
+        return <Skeleton />;
     }
 
     if (error) {

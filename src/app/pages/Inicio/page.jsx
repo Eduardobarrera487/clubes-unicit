@@ -6,6 +6,22 @@ import HeaderLogin from "@/app/_components/header";
 import PopularClubs from "@/app/_components/popularClubs";
 import AnunciosFeed from "@/app/_components/anunciosFeed";
 
+function Skeleton() {
+    return (
+        <div className="flex flex-row flex-wrap w-full p-10">
+            <div className='w-[30%] flex flex-row flex-wrap justify-center relative'>
+                <div className="bg-gray-300 h-32 w-full animate-pulse rounded-md"></div>
+            </div>
+            <div className='w-[37%] flex flex-row flex-wrap p-0 justify-center'>
+                <div className="bg-gray-300 h-32 w-full animate-pulse rounded-md"></div>
+            </div>
+            <div className='w-[30%] flex flex-row flex-wrap justify-end'>
+                <div className="bg-gray-300 h-32 w-full animate-pulse rounded-md"></div>
+            </div>
+        </div>
+    );
+}
+
 function Page() {
     const [loading, setLoading] = useState(true);
     const [authenticated, setAuthenticated] = useState(false);
@@ -37,7 +53,7 @@ function Page() {
     }, []);
 
     if (loading) {
-        return <div>Cargando...</div>;
+        return <Skeleton />; // Mostrar el esqueleto mientras se carga
     }
 
     if (!authenticated) {
@@ -47,14 +63,10 @@ function Page() {
     return (
         <div>
             <HeaderLogin />
-            <div className="p-10 flex flex-row flex-wrap  w-full ">
-
-                <div className='w-[30%]  flex flex-row flex-wrap justify-center relative'><MenuCard /></div>
+            <div className="p-10 flex flex-row flex-wrap w-full">
+                <div className='w-[30%] flex flex-row flex-wrap justify-center relative'><MenuCard /></div>
                 <div className='w-[37%] flex flex-row flex-wrap p-0 justify-center '><AnunciosFeed /></div>
                 <div className='w-[30%] flex flex-row flex-wrap justify-end'><PopularClubs /></div>
-                
-                
-                
             </div>
         </div>
     );
