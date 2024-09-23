@@ -1,69 +1,66 @@
 'use client'
 import React, { useState } from "react";
 
-const EventoForm = () => {
+const EventoForm = ({ clubId }) => {
   const [formData, setFormData] = useState({
     tituloEvento: "",
     description: "",
     eventDate: "",
-    
   });
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: files ? files[0] : value,
+      [name]: value,
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Crear un nuevo objeto FormData
     const data = new FormData();
 
-    // Agregar los datos del formulario al objeto FormData
-    data.append('tituloEvento', formData.tituloEvento);
+    // Asegúrate de que los valores no están vacíos antes de agregar
+    if (clubId) data.append('clubId', clubId);
+    if (formData.tituloEvento) data.append('tituloEvento', formData.tituloEvento);
+    if (formData.description) data.append('description', formData.description);
+    if (formData.eventDate) data.append('eventDate', formData.eventDate);
 
-    data.append('description', formData.description);
-    data.append('eventDate', formData.eventDate);
     try {
-      // Enviar la solicitud POST usando fetch
       const response = await fetch('http://localhost:8000/activities', {
         method: 'POST',
         body: data,
       });
 
-      // Verificar si la respuesta es JSON o texto
       const contentType = response.headers.get('content-type');
       let result;
 
       if (contentType && contentType.includes('application/json')) {
         result = await response.json();
       } else {
-        result = await response.text(); // Si no es JSON, obtener como texto
+        result = await response.text();
       }
 
       if (!response.ok) {
-        throw new Error('Error al crear el Evento: ' + result);
+        throw new Error('Error al crear el Evento: ' + result.message || result);
       }
+      alert('Evento creado exitosamente');
       console.log('Evento creado exitosamente:', result);
     } catch (error) {
+      alert('Error al crear el Evento: ' + error.message);
       console.error('Error al crear el Evento:', error);
     }
   };
 
-
   return (
     <div className="flex justify-center items-center min-1/2">
-      
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full"
       >
         <h2 className="py-3 rounded-xl text-2xl font-bold mb-6 text-center bg-[#FFDF37] text-[#274790]">Crear un evento</h2>
 
-        {/* Nombre del Club */}
         <div className="mb-4">
           <label htmlFor="tituloEvento" className="block text-gray-700 font-medium mb-2">
             Titulo del anuncio
@@ -80,7 +77,6 @@ const EventoForm = () => {
           />
         </div>
 
-        {/* Descripción */}
         <div className="mb-4">
           <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
             Descripción
@@ -96,7 +92,6 @@ const EventoForm = () => {
           />
         </div>
 
-        {/* Subir Foto */}
         <div className="mb-4">
           <label htmlFor="eventDate" className="block text-gray-700 font-medium mb-2">
             Escoge la fecha del evento
@@ -105,6 +100,7 @@ const EventoForm = () => {
             type="date"
             name="eventDate"
             id="eventDate"
+            value={formData.eventDate}
             onChange={handleChange}
             required
             min="2000-01-01"
@@ -112,8 +108,6 @@ const EventoForm = () => {
           />
         </div>
 
-        
-        {/* Botón de Enviar */}
         <button
           type="submit"
           className="w-full bg-[#274790] text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"

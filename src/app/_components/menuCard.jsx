@@ -51,7 +51,7 @@ function MenuCard() {
 
 
   return (
-    <div className="h-full p-3 space-y-2 w-60 dark:bg-gray-50 dark:text-gray-800  rounded-md shadow-lg">
+    <div className="h-full space-y-2 w-60 h-60 dark:bg-gray-50 dark:text-gray-800  rounded-md shadow-lg">
         <div className="flex items-center p-2 space-x-4">
             <img src="Foto del usuario" alt="" className="w-12 h-12 rounded-full dark:bg-gray-500" />
             <div>
@@ -70,7 +70,7 @@ function MenuCard() {
                 </li>
                 
                 <li>
-                    <Link rel="noopener noreferrer" href="#" className="flex items-center p-2 space-x-3 rounded-md">
+                    <Link rel="noopener noreferrer" href="/pages/calendar" className="flex items-center p-2 space-x-3 rounded-md">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                         </svg>
