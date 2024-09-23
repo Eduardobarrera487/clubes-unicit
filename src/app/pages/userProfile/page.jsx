@@ -1,9 +1,8 @@
 'use client'
 import Header from "@/app/_components/header";
 import MenuCard from "@/app/_components/menuCard";
-import UserForm from "@/app/_components/userForm";
-
-export default function UserConfig() {
+import UserForm from "@/app/_components/userProfile";
+export default function UserProfile() {
     return (
         <div>
             <Header />
@@ -14,7 +13,11 @@ export default function UserConfig() {
                 <section className="w-[70%]">
                     <UserForm />
                 </section>
+
+
             </main>
         </div>
     )
-} 
+
+
+}

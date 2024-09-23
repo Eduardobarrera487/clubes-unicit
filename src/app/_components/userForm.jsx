@@ -1,4 +1,7 @@
+'use client';
+
 import React, { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 const UserForm = () => {
   const [formData, setFormData] = useState({
@@ -6,106 +9,161 @@ const UserForm = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    career: "",
+    profilePicture: null
   });
+  const [responseMessage, setResponseMessage] = useState(null);
+  const [isError, setIsError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
+    const { name, value, files } = e.target;
+    setFormData(prevData => ({
       ...prevData,
-      [name]: value,
+      [name]: files ? files[0] : value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic
-    console.log(formData);
+    setIsError(false);
+    setResponseMessage(null);
+    setIsSubmitting(true);
+  
+    const data = new FormData();
+    data.append('User', formData.username);
+    data.append('Email', formData.email);
+    if (formData.password) {
+      data.append('Password', formData.password);
+    }
+    if (formData.profilePicture) {
+      data.append('Picture', formData.profilePicture);
+    }
+  
+    try {
+      const response = await fetch('http://localhost:8000/update-user', {
+        method: 'PUT',
+        body: data,
+        credentials: 'include',
+      });
+  
+      const result = await response.json();
+      console.log('Respuesta del servidor:', result);
+  
+      if (response.ok) {
+        setIsError(false);
+        setResponseMessage(result.message || 'Usuario actualizado exitosamente');
+      } else {
+        throw new Error(result.message || 'Error al actualizar el usuario');
+      }
+    } catch (error) {
+      setIsError(true);
+      setResponseMessage('Error al actualizar el usuario: ' + error.message);
+      console.error('Error completo:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="bg-purple-50 p-8 rounded-lg shadow-md w-full d mx-auto">
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Nombre de usuario</label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
+    <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-8 bg-yellow-300 py-4 rounded-t-lg">
+          <div className="uppercase tracking-wide text-lg text-blue-900 font-semibold">AJUSTES DE USUARIO</div>
         </div>
+        <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-b-lg px-8 pt-6 pb-8 mb-4">
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="username">
+              Nombre de usuario
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Correo</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="email">
+              Correo
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Contraseña</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="password">
+              Nueva Contraseña
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Confirmar contraseña</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="confirmPassword">
+              Confirmar nueva contraseña
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Carrera</label>
-          <input
-            type="text"
-            name="career"
-            value={formData.career}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="profilePicture">
+              Cambiar Foto
+            </label>
+            <input
+              type="file"
+              id="profilePicture"
+              name="profilePicture"
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Cambiar Foto</label>
-          <input
-            type="file"
-            name="profilePicture"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
-
-        <div className="flex justify-between">
-        <button
-            type="button"
-            className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
-          >
-            Guardar
-          </button>
-          
-        </div>
-      </form>
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => router.push('/pages/userProfile')}
+              className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`bg-blue-900 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {isSubmitting ? 'Guardando...' : 'Guardar'}
+            </button>
+          </div>
+        </form>
+        {responseMessage && (
+          <p className={`text-center mt-4 ${isError ? 'text-red-500' : 'text-green-500'}`}>
+            {responseMessage}
+          </p>
+        )}
+      </div>
     </div>
   );
 };
