@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 
 const UserForm = () => {
@@ -14,7 +14,46 @@ const UserForm = () => {
   const [responseMessage, setResponseMessage] = useState(null);
   const [isError, setIsError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [user, setUser] = useState(null); // Aquí se almacena la información del usuario incluyendo el idUser
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const router = useRouter();
+
+  // Obtener los datos del usuario autenticado
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/check-auth', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos del usuario');
+        }
+
+        const data = await response.json();
+
+        if (data.authenticated) {
+          // Fijarse que aquí se usa 'IdUser' con la "I" mayúscula
+          setUser({
+            idUser: data.IdUser,  // Aquí ajustamos para usar 'IdUser'
+            username: data.username,
+            email: data.email,
+          });
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -29,32 +68,42 @@ const UserForm = () => {
     setIsError(false);
     setResponseMessage(null);
     setIsSubmitting(true);
-  
-    const data = new FormData();
-    data.append('User', formData.username);
-    data.append('Email', formData.email);
-    if (formData.password) {
-      data.append('Password', formData.password);
+
+    if (!user || !user.idUser) {
+      setIsError(true);
+      setResponseMessage('No se pudo obtener el ID del usuario.');
+      setIsSubmitting(false);
+      return;
     }
+
+    const updatedValues = {
+      idUser: user.idUser,  // Asegúrate de que este valor esté presente
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+    };
+
     if (formData.profilePicture) {
-      data.append('Picture', formData.profilePicture);
+      updatedValues.profilePicture = formData.profilePicture;
     }
-  
+
     try {
-      const response = await fetch('http://localhost:8000/update-user', {
+      const response = await fetch('http://localhost:8000/user', {
         method: 'PUT',
-        body: data,
+        body: JSON.stringify(updatedValues),
+        headers: {
+          'Content-Type': 'application/json',
+        },
         credentials: 'include',
       });
-  
+
       const result = await response.json();
       console.log('Respuesta del servidor:', result);
-  
+
       if (response.ok) {
-        setIsError(false);
         setResponseMessage(result.message || 'Usuario actualizado exitosamente');
       } else {
-        throw new Error(result.message || 'Error al actualizar el usuario');
+        throw new Error(result.error || 'Error al actualizar el usuario');
       }
     } catch (error) {
       setIsError(true);
@@ -64,6 +113,19 @@ const UserForm = () => {
       setIsSubmitting(false);
     }
   };
+
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (!user) {
+    return <div>No estás autenticado</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
