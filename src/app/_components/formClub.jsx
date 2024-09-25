@@ -8,8 +8,8 @@ const ClubForm = () => {
     banner: null,
     ClubName: "",
     Coach: "",
-    idAnnouncement: "",
-    idActivities: "",
+    idAnnouncement: null,
+    idActivities: null,
   });
 
   const handleChange = (e) => {
@@ -36,8 +36,7 @@ const ClubForm = () => {
     data.append('Description', formData.Description);
     data.append('ClubName', formData.ClubName);
     data.append('Coach', formData.Coach);
-    data.append('idAnnouncement', formData.idAnnouncement);
-    data.append('idActivities', formData.idActivities);
+    
 
     try {
       // Enviar la solicitud POST usando fetch
@@ -155,37 +154,6 @@ const ClubForm = () => {
           />
         </div>
 
-        {/* ID del Anuncio */}
-        <div className="mb-4">
-          <label htmlFor="idAnnouncement" className="block text-gray-700 font-medium mb-2">
-            ID del Anuncio
-          </label>
-          <input
-            type="number"
-            name="idAnnouncement"
-            id="idAnnouncement"
-            value={formData.idAnnouncement}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            placeholder="Introduce el ID del anuncio"
-          />
-        </div>
-
-        {/* ID de Actividades */}
-        <div className="mb-4">
-          <label htmlFor="idActivities" className="block text-gray-700 font-medium mb-2">
-            ID de Actividades
-          </label>
-          <input
-            type="number"
-            name="idActivities"
-            id="idActivities"
-            value={formData.idActivities}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            placeholder="Introduce el ID de las actividades"
-          />
-        </div>
 
         {/* Botón de Enviar */}
         <button

@@ -53,6 +53,7 @@ function Page({ params }) {
   };
 
 
+
   const toggleAnuncioForm = () => {
     setIsAnuncioFormOpen(!isAnuncioFormOpen);
   };
@@ -238,17 +239,19 @@ function Page({ params }) {
             <button onClick={toggleClubSettingsForm} className="bg-green-600 text-white py-2 px-4 rounded w-full">
               Ajustes del Club
             </button>
-           
+
           </div>
         </div>
 
 
+
         {/* Main Content */}
+       
         <main className="w-4/5 p-8">
           {/* Banner */}
           <section className="bg-gray-200 h-32 rounded mb-8 flex items-center justify-center">
             {club?.Banner ? (
-              <img src={club.Banner} alt="Banner del Club" className="w-full h-full object-cover rounded" />
+              <img src={`http://localhost:8000/Uploads/${club.Banner}`} alt="Banner del Club" className="w-full h-full object-cover rounded" />
             ) : (
               <p>No hay banner disponible</p>
             )}
@@ -258,7 +261,7 @@ function Page({ params }) {
           <section className="bg-white p-6 rounded shadow-md mb-8 relative">
             <div className="flex items-center">
               {club?.Picture ? (
-                <img src={club.Picture} alt="Foto del Club" className="w-16 h-16 rounded-full mr-4" />
+                <img src={`http://localhost:8000/Uploads/${club.Picture}`} alt="Foto del Club" className="w-16 h-16 rounded-full mr-4" />
               ) : (
                 <div className="w-16 h-16 rounded-full bg-gray-300 mr-4 flex items-center justify-center">
                   <span className="text-gray-700">No Image</span>
@@ -279,6 +282,8 @@ function Page({ params }) {
               )
             }
           </section>
+          {console.log('URL del Banner:', club.Banner)}
+          {console.log('URL de la Imagen:', club.Picture)}
 
           {/* Sección de tabs */}
           <section className="bg-white p-6 rounded shadow-md">

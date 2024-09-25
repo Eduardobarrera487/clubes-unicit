@@ -90,7 +90,7 @@ function PopularClubs() {
                                     className="flex items-center p-2 space-x-3 rounded-md"
                                 >
                                     <img
-                                        src={club.Picture ? club.Picture : "/default-club-logo.png"}
+                                        src={`http://localhost:8000/Uploads/${club.Picture}`}
                                         alt={`${club.ClubName} logo`}
                                         className="h-10 w-10"
                                     />
