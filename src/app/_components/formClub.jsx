@@ -12,6 +12,8 @@ const ClubForm = () => {
     idActivities: null,
   });
 
+  const [successMessage, setSuccessMessage] = useState(""); // Nuevo estado para el mensaje de éxito
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData({
@@ -22,6 +24,7 @@ const ClubForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSuccessMessage(""); // Reiniciar el mensaje de éxito al enviar el formulario
 
     // Crear un nuevo objeto FormData
     const data = new FormData();
@@ -36,7 +39,6 @@ const ClubForm = () => {
     data.append('Description', formData.Description);
     data.append('ClubName', formData.ClubName);
     data.append('Coach', formData.Coach);
-    
 
     try {
       // Enviar la solicitud POST usando fetch
@@ -58,9 +60,12 @@ const ClubForm = () => {
       if (!response.ok) {
         throw new Error('Error al crear el Club: ' + result);
       }
+
       console.log('Club creado exitosamente:', result);
+      setSuccessMessage("Club creado correctamente"); // Establecer mensaje de éxito
     } catch (error) {
       console.error('Error al crear el Club:', error);
+      setSuccessMessage(""); // Reiniciar el mensaje si hay un error
     }
   };
 
@@ -154,7 +159,6 @@ const ClubForm = () => {
           />
         </div>
 
-
         {/* Botón de Enviar */}
         <button
           type="submit"
@@ -162,6 +166,11 @@ const ClubForm = () => {
         >
           Crear Club
         </button>
+
+        {/* Mensaje de éxito */}
+        {successMessage && (
+          <p className="mt-4 text-green-600 text-center">{successMessage}</p>
+        )}
       </form>
     </div>
   );

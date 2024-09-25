@@ -14,7 +14,7 @@ const UserForm = () => {
   const [responseMessage, setResponseMessage] = useState(null);
   const [isError, setIsError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [user, setUser] = useState(null); // Aquí se almacena la información del usuario incluyendo el idUser
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
@@ -35,11 +35,10 @@ const UserForm = () => {
         const data = await response.json();
 
         if (data.authenticated) {
-          // Fijarse que aquí se usa 'IdUser' con la "I" mayúscula
           setUser({
-            idUser: data.IdUser,  // Aquí ajustamos para usar 'IdUser'
-            username: data.username,
-            email: data.email,
+            idUser: data.IdUser,
+            username: data.User,
+            email: data.Email,
           });
         } else {
           setUser(null);
@@ -54,7 +53,6 @@ const UserForm = () => {
     fetchUserData();
   }, []);
 
-
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData(prevData => ({
@@ -63,37 +61,37 @@ const UserForm = () => {
     }));
   };
 
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsError(false);
     setResponseMessage(null);
     setIsSubmitting(true);
 
-    if (!user || !user.idUser) {
-      setIsError(true);
-      setResponseMessage('No se pudo obtener el ID del usuario.');
-      setIsSubmitting(false);
-      return;
-    }
-
-    const updatedValues = {
-      idUser: user.idUser,  // Asegúrate de que este valor esté presente
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
-    };
-
-    if (formData.profilePicture) {
-      updatedValues.profilePicture = formData.profilePicture;
-    }
-
     try {
-      const response = await fetch('http://localhost:8000/user', {
-        method: 'PUT',
-        body: JSON.stringify(updatedValues),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const form = new FormData();
+      form.append('username', formData.username);
+      form.append('email', formData.email);
+      form.append('password', formData.password);
+      if (formData.profilePicture) {
+        form.append('profilePicture', formData.profilePicture); // Enviar como archivo
+      }
+
+      const response = await fetch('http://localhost:8000/edit-user', {
+        method: 'POST',
+        body:form,
         credentials: 'include',
       });
 
@@ -113,19 +111,6 @@ const UserForm = () => {
       setIsSubmitting(false);
     }
   };
-
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (!user) {
-    return <div>No estás autenticado</div>;
-  }
 
   return (
     <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">

@@ -5,8 +5,8 @@ function ClubSettingsForm({ isOpen, onClose, clubData, onSave }) {
     clubName: clubData?.ClubName || '',
     description: clubData?.Description || '',
     coach: clubData?.Coach || '',
-    banner: clubData?.Banner || '',
-    picture: clubData?.Picture || ''
+    banner: null, // Cambiamos a null para almacenar el archivo
+    picture: null // Cambiamos a null para almacenar el archivo
   });
 
   if (!isOpen) return null;
@@ -19,10 +19,29 @@ function ClubSettingsForm({ isOpen, onClose, clubData, onSave }) {
     });
   };
 
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    if (files.length > 0) {  // Asegúrate de que hay un archivo
+      setFormValues({
+        ...formValues,
+        [name]: files[0] // Guardamos el archivo en el estado
+      });
+    }
+  };
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Crear un objeto FormData para enviar archivos
+    const data = new FormData();
+    data.append('clubName', formValues.clubName);
+    data.append('description', formValues.description);
+    data.append('coach', formValues.coach);
+    if (formValues.banner) data.append('banner', formValues.banner);
+    if (formValues.picture) data.append('picture', formValues.picture);
+
     // Llama la función de guardar o actualizar el club con los nuevos valores
-    onSave(formValues);
+    onSave(data);
     onClose(); // Cierra el modal después de guardar
   };
 
@@ -64,7 +83,7 @@ function ClubSettingsForm({ isOpen, onClose, clubData, onSave }) {
               type="text"
               id="coach"
               name="coach"
-              value={formValues.Coach}
+              value={formValues.coach}
               onChange={handleInputChange}
               className="w-full p-2 border border-gray-300 rounded"
             />
@@ -72,21 +91,23 @@ function ClubSettingsForm({ isOpen, onClose, clubData, onSave }) {
 
           <div className="flex justify-between mb-4">
             <div className="w-1/2">
-              <label htmlFor="Picture" className="block text-gray-700 font-semibold">Cambiar Foto</label>
+              <label htmlFor="picture" className="block text-gray-700 font-semibold">Cambiar Foto</label>
               <input
                 type="file"
-                id="Picture"
-                name="Picture"
+                id="picture"
+                name="picture"
+                onChange={handleFileChange}
                 className="block w-full border border-gray-300 p-2 rounded cursor-pointer bg-white"
               />
             </div>
 
             <div className="w-1/2 pl-2">
-              <label htmlFor="Banner" className="block text-gray-700 font-semibold">Cambiar Banner</label>
+              <label htmlFor="banner" className="block text-gray-700 font-semibold">Cambiar Banner</label>
               <input
                 type="file"
-                id="Banner"
-                name="Banner"
+                id="banner"
+                name="banner"
+                onChange={handleFileChange}
                 className="block w-full border border-gray-300 p-2 rounded cursor-pointer bg-white"
               />
             </div>

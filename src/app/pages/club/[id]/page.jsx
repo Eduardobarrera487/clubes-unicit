@@ -66,17 +66,30 @@ function Page({ params }) {
   const handleSaveClubSettings = async (updatedValues) => {
     console.log('Guardando ajustes del club:', updatedValues);
     try {
-      const response = await fetch(`http://localhost:8000/club`, {
-        method: 'PUT', // Asegúrate de que usas PUT para actualizar
-        body: JSON.stringify({ idClub: clubId, ...updatedValues }), // Agrega clubId a los valores actualizados
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const formData = new FormData();
+
+      // Añadir los datos actualizados al FormData
+      formData.append('idClub', clubId); // Agrega el ID del club
+      for (const key in updatedValues) {
+        formData.append(key, updatedValues[key]);
+      }
+
+      // Si hay imágenes, agrégalas también
+      if (updatedValues.picture) {
+        formData.append('picture', updatedValues.picture);
+      }
+      if (updatedValues.banner) {
+        formData.append('banner', updatedValues.banner);
+      }
+
+      const response = await fetch(`http://localhost:8000/edit-club`, {
+        method: 'POST',
+        body: formData, // Cambia a FormData para permitir el envío de archivos
         credentials: 'include',
       });
 
       if (response.ok) {
-        const updatedClub = await response.json(); // Cambia a json() para procesar correctamente la respuesta
+        const updatedClub = await response.json();
         console.log('Club actualizado:', updatedClub);
 
         // Actualizar el estado local de clubs
@@ -95,6 +108,7 @@ function Page({ params }) {
       console.log(`Error: ${err.message}`);
     }
   };
+
 
   // Fetch de clubes de usuario
   useEffect(() => {
@@ -246,7 +260,7 @@ function Page({ params }) {
 
 
         {/* Main Content */}
-       
+
         <main className="w-4/5 p-8">
           {/* Banner */}
           <section className="bg-gray-200 h-32 rounded mb-8 flex items-center justify-center">

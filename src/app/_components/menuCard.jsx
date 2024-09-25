@@ -127,6 +127,13 @@ function MenuCard() {
                         </Link>
                     </li>
                     <li>
+                        <Link rel="noopener noreferrer" href="/pages/creaTuClub" className="flex items-center p-2 pl-[2rem] space-x-3 rounded-md">
+
+
+                            <span>Crea tu club</span>
+                        </Link>
+                    </li>
+                    <li>
                         <button
                             onClick={handleLogout}
                             disabled={loading}
