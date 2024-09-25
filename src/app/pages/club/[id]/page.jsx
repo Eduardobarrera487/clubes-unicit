@@ -84,7 +84,7 @@ function Page({ params }) {
             console.log('Respuesta del servidor aca en user clubs:', data);
 
             if (data) {
-              setClubs(data.clubs);
+              setUserClubs(data.clubs);
             }
           } catch (err) {
             console.error('Error al parsear JSON:', err);
@@ -188,7 +188,7 @@ function Page({ params }) {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
-
+  console.log(userclubs.find((club) => club.IdClub == clubId), userclubs  )
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Header */}
@@ -201,7 +201,7 @@ function Page({ params }) {
           {/* Botones debajo del sidebar */}
           <div className="mt-8">
             <button onClick={toggleEventoForm} className="bg-blue-600 text-white py-2 px-4 rounded mb-4 w-full">
-              Añadir evento
+              Añadir evento 
             </button>
             <button onClick={toggleAnuncioForm} className="bg-blue-600 text-white py-2 px-4 rounded mb-4 w-full">
               Anunciar
