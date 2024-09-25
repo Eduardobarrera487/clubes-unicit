@@ -10,6 +10,7 @@ import ClubSettingsForm from '@/app/_components/ClubSettingsForm'; // Importar C
 function Page({ params }) {
   const clubId = params.id;
   const [clubs, setClubs] = useState([]);
+  const [userclubs, setUserClubs] = useState([]);
   const [eventos, setEventos] = useState([]); // Estado para almacenar los eventos
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -65,7 +66,7 @@ function Page({ params }) {
     }
   };
 
-  // Fetch de clubes
+  // Fetch de clubes de usuario
   useEffect(() => {
     const fetchUserClubs = async () => {
       try {
@@ -80,12 +81,10 @@ function Page({ params }) {
 
           try {
             const data = JSON.parse(text); // Intentar parsear el JSON
-            console.log('Respuesta del servidor:', data);
+            console.log('Respuesta del servidor aca en user clubs:', data);
 
-            if (data.success) {
+            if (data) {
               setClubs(data.clubs);
-            } else {
-              setError(data.message);
             }
           } catch (err) {
             console.error('Error al parsear JSON:', err);
@@ -103,6 +102,44 @@ function Page({ params }) {
     };
 
     fetchUserClubs();
+  }, []);
+  
+  // Fetch de clubes
+  useEffect(() => {
+    const fetchClubs = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/club', {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const text = await response.text(); // Obtener la respuesta como texto
+          console.log('Texto de la respuesta:', text); // Ver el texto completo
+
+          try {
+            const data = JSON.parse(text); // Intentar parsear el JSON
+            console.log('Respuesta del servidor aca:', data);
+
+            if (data) {
+              setClubs(data);
+            }
+          } catch (err) {
+            console.error('Error al parsear JSON:', err);
+            setError('Error al procesar la respuesta del servidor');
+          }
+        } else {
+          throw new Error('Error al obtener los clubes');
+        }
+      } catch (err) {
+        console.error('Error fetching clubs:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClubs();
   }, []);
 
   // Fetch de eventos
@@ -142,6 +179,10 @@ function Page({ params }) {
   }
 
   const club = clubs.find((club) => club.IdClub == params.id);
+  if(!club) {
+    // pongan algo mas bonito cuando no se encuentre lol
+    return <div>Club no encontrado</div>;
+  }
 
   // Función para cambiar el tab activo
   const handleTabClick = (tab) => {
@@ -256,7 +297,8 @@ function Page({ params }) {
               {activeTab === "eventos" && (
                 <div>
                   {/* Renderizar los eventos */}
-                  {eventos.length > 0 ? (
+                  {userclubs.find((club) => club.IdClub == clubId) ? (
+                  eventos.length > 0 ? (
                     eventos.map((evento, index) => (
                       <EventoCard
                         key={index}
@@ -267,8 +309,8 @@ function Page({ params }) {
                     ))
                   ) : (
                     <p>No hay eventos disponibles</p>
-                  )}
-                </div>
+                  )) : (<p>Registrate en el club para poder revisar los eventos!</p>)}
+                                                  </div>
               )}
             </div>
 
