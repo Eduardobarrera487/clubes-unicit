@@ -18,11 +18,40 @@ function Page({ params }) {
   const [isEventoFormOpen, setIsEventoFormOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("anuncios"); // Estado para el tab activo
   const [isClubSettingsOpen, setIsClubSettingsOpen] = useState(false); // Estado para ClubSettingsForm
+  const [joinMessage, setJoinMessage] = useState(""); // Estado para el mensaje de unión
+
 
   // Función para abrir/cerrar el formulario de ajustes del club
   const toggleClubSettingsForm = () => {
     setIsClubSettingsOpen(!isClubSettingsOpen);
   };
+
+  const handleJoinClub = async (clubId) => {
+    try {
+      const response = await fetch('http://localhost:8000/join-club', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ IdClub: clubId }),
+        credentials: 'include', // Esto incluye las cookies de sesión en la solicitud
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setJoinMessage('Te has unido al club exitosamente.');
+        setUserClubs((prev) => [...prev, { IdClub: clubId }]);        // Aquí puedes actualizar el estado de clubs del usuario
+      } else {
+        setJoinMessage(data.error || 'Error de conexión al unirse al club.');
+
+      }
+    } catch (err) {
+      console.error('Error uniendo al club:', err);
+      alert('Error de conexión al unirse al club.');
+    }
+  };
+
 
   const toggleAnuncioForm = () => {
     setIsAnuncioFormOpen(!isAnuncioFormOpen);
@@ -103,7 +132,7 @@ function Page({ params }) {
 
     fetchUserClubs();
   }, []);
-  
+
   // Fetch de clubes
   useEffect(() => {
     const fetchClubs = async () => {
@@ -179,7 +208,7 @@ function Page({ params }) {
   }
 
   const club = clubs.find((club) => club.IdClub == params.id);
-  if(!club) {
+  if (!club) {
     // pongan algo mas bonito cuando no se encuentre lol
     return <div>Club no encontrado</div>;
   }
@@ -188,7 +217,7 @@ function Page({ params }) {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
-  console.log(userclubs.find((club) => club.IdClub == clubId), userclubs  )
+  console.log(userclubs.find((club) => club.IdClub == clubId), userclubs)
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Header */}
@@ -201,7 +230,7 @@ function Page({ params }) {
           {/* Botones debajo del sidebar */}
           <div className="mt-8">
             <button onClick={toggleEventoForm} className="bg-blue-600 text-white py-2 px-4 rounded mb-4 w-full">
-              Añadir evento 
+              Añadir evento
             </button>
             <button onClick={toggleAnuncioForm} className="bg-blue-600 text-white py-2 px-4 rounded mb-4 w-full">
               Anunciar
@@ -209,8 +238,10 @@ function Page({ params }) {
             <button onClick={toggleClubSettingsForm} className="bg-green-600 text-white py-2 px-4 rounded w-full">
               Ajustes del Club
             </button>
+           
           </div>
         </div>
+
 
         {/* Main Content */}
         <main className="w-4/5 p-8">
@@ -224,7 +255,7 @@ function Page({ params }) {
           </section>
 
           {/* Información del club */}
-          <section className="bg-white p-6 rounded shadow-md mb-8">
+          <section className="bg-white p-6 rounded shadow-md mb-8 relative">
             <div className="flex items-center">
               {club?.Picture ? (
                 <img src={club.Picture} alt="Foto del Club" className="w-16 h-16 rounded-full mr-4" />
@@ -235,6 +266,18 @@ function Page({ params }) {
               )}
               <h2 className="text-2xl">{club?.ClubName}</h2>
             </div>
+            {
+              userclubs.find((club) => club.IdClub == clubId) ? (
+                <p className="absolute right-10 bottom-10">Ya eres miembro de este club.</p>
+              ) : (
+                <button
+                  onClick={() => handleJoinClub(clubId)}
+                  className="bg-green-600 text-white py-2 px-4 rounded w-[20%] absolute right-10 bottom-10"
+                >
+                  Unirse al club
+                </button>
+              )
+            }
           </section>
 
           {/* Sección de tabs */}
@@ -266,7 +309,7 @@ function Page({ params }) {
               {activeTab === "informacion" && (
                 <div className="bg-white p-6 rounded shadow-md">
                   <h3 className="text-xl font-bold mb-4">Información del Club</h3>
-                  
+
                   {/* Mostrar la información del club */}
                   <div className="mb-4">
                     <h4 className="font-semibold">Nombre:</h4>
@@ -298,19 +341,19 @@ function Page({ params }) {
                 <div>
                   {/* Renderizar los eventos */}
                   {userclubs.find((club) => club.IdClub == clubId) ? (
-                  eventos.length > 0 ? (
-                    eventos.map((evento, index) => (
-                      <EventoCard
-                        key={index}
-                        title={evento.ActivityName}
-                        date={evento.ActivityDate}
-                        description={evento.Description}
-                      />
-                    ))
-                  ) : (
-                    <p>No hay eventos disponibles</p>
-                  )) : (<p>Registrate en el club para poder revisar los eventos!</p>)}
-                                                  </div>
+                    eventos.length > 0 ? (
+                      eventos.map((evento, index) => (
+                        <EventoCard
+                          key={index}
+                          title={evento.ActivityName}
+                          date={evento.ActivityDate}
+                          description={evento.Description}
+                        />
+                      ))
+                    ) : (
+                      <p>No hay eventos disponibles</p>
+                    )) : (<p>Registrate en el club para poder revisar los eventos!</p>)}
+                </div>
               )}
             </div>
 
