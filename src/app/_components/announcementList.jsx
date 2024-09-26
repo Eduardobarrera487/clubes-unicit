@@ -40,8 +40,39 @@ const AnnouncementsList = ({ clubId }) => {
     fetchAnnouncements();
   }, [clubId]); // Ejecutar cuando `clubId` cambie
 
-  if (loading) return <div>Cargando anuncios...</div>;
+  // components/SkeletonAnnouncementCard.jsx
+const SkeletonAnnouncementCard = () => {
+  return (
+    <div className="bg-gray-200 animate-pulse rounded-lg p-4">
+      <div className="h-6 bg-gray-300 rounded mb-2"></div>
+      <div className="h-4 bg-gray-300 rounded mb-4"></div>
+      <div className="h-64 bg-gray-300 rounded"></div>
+    </div>
+  );
+};
+
+
+
+  if (loading) return <div> <SkeletonAnnouncementCard></SkeletonAnnouncementCard></div>;
   if (error) return <div>Error: {error}</div>;
+  // components/AnnouncementCard.jsx
+const AnnouncementCard = ({ announcement }) => {
+  return (
+    <div className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow duration-200">
+      <h3 className="text-lg font-semibold">{announcement.Name}</h3>
+      <p className="text-gray-700">{announcement.Description}</p>
+      {/* Verifica si existe una imagen para el anuncio */}
+      {announcement.Picture && (
+        <img
+          src={`http://localhost:8000/${announcement.Picture}`} // Ruta a la imagen
+          alt={announcement.Name}
+          className="w-full h-64 object-cover mb-4 rounded-lg mt-5"
+        />
+      )}
+    </div>
+  );
+};
+
 
   return (
     <div className="grid grid-cols-1 gap-4">

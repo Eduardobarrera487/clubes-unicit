@@ -1,13 +1,18 @@
 'use client'
+
 import React, { useState } from "react";
 
-const AnuncioForm = () => {
+const AnuncioForm = ({ clubId }) => {
   const [formData, setFormData] = useState({
     tituloAnuncio: "",
     description: "",
     picture: null,
-    
+    clubId: clubId
   });
+
+  const [serverResponse, setServerResponse] = useState(""); // Para almacenar la respuesta del servidor
+  const [error, setError] = useState(""); // Para manejar errores
+  const [success, setSuccess] = useState(false); // Para mostrar si el proceso fue exitoso
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -25,11 +30,12 @@ const AnuncioForm = () => {
 
     // Agregar los datos del formulario al objeto FormData
     data.append('tituloAnuncio', formData.tituloAnuncio);
+    data.append('clubId', formData.clubId); // Asegurarse de enviar el ID del club
     if (formData.picture) {
       data.append('picture', formData.picture);
     }
-
     data.append('description', formData.description);
+
     try {
       // Enviar la solicitud POST usando fetch
       const response = await fetch('http://localhost:8000/announcement', {
@@ -37,22 +43,19 @@ const AnuncioForm = () => {
         body: data,
       });
 
-      // Verificar si la respuesta es JSON o texto
-      const contentType = response.headers.get('content-type');
-      let result;
-
-      if (contentType && contentType.includes('application/json')) {
-        result = await response.json();
-      } else {
-        result = await response.text(); // Si no es JSON, obtener como texto
-      }
+      const result = await response.json(); // Asumimos que el backend devuelve JSON siempre
 
       if (!response.ok) {
-        throw new Error('Error al crear el anuncio: ' + result);
+        throw new Error(result.message || 'Error al crear el anuncio');
       }
+
       console.log('Anuncio creado exitosamente:', result);
+      setServerResponse(JSON.stringify(result, null, 2)); // Guardar la respuesta para mostrarla en la interfaz
+      setSuccess(true); // Mostrar mensaje de éxito
     } catch (error) {
       console.error('Error al crear el Anuncio:', error);
+      setError(error.message); // Mostrar mensaje de error en la interfaz
+      setSuccess(false);
     }
   };
 
@@ -113,7 +116,6 @@ const AnuncioForm = () => {
           />
         </div>
 
-        
         {/* Botón de Enviar */}
         <button
           type="submit"
@@ -121,6 +123,11 @@ const AnuncioForm = () => {
         >
           Publicar el anuncio
         </button>
+
+        {/* Mostrar el resultado */}
+        {success && <p className="text-green-500 mt-4">Anuncio creado correctamente</p>}
+        {error && <p className="text-red-500 mt-4">Error: {error}</p>}
+
       </form>
     </div>
   );

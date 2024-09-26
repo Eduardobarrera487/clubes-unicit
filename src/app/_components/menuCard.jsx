@@ -90,7 +90,7 @@ function MenuCard() {
     }
 
     return (
-        <div className="h-full space-y-2 w-60 dark:bg-gray-50 dark:text-gray-800 rounded-md shadow-lg">
+        <div className="h-80 space-y-2 w-60 dark:bg-gray-50 dark:text-gray-800 rounded-md shadow-lg">
             <div className="flex items-center p-2 space-x-4">
                 <img  src={`http://localhost:8000/${user.picture}`} alt="" className="w-12 h-12 rounded-full dark:bg-gray-500" />
                 <div>

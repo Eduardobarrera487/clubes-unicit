@@ -7,6 +7,7 @@ import EventoForm from "@/app/_components/formEvento";
 import EventoCard from "@/app/_components/eventoCard"; // Importar componente EventoCard
 import ClubSettingsForm from '@/app/_components/ClubSettingsForm'; // Importar ClubSettingsForm
 import AnnouncementsList from "@/app/_components/announcementList";
+import SkeletonLoadingClub from "@/app/_components/skeletonLoadingClub";
 //Si
 function Page({ params }) {
   const clubId = params.id;
@@ -63,52 +64,7 @@ function Page({ params }) {
     setIsEventoFormOpen(!isEventoFormOpen);
   };
 
-  // Función para guardar los cambios del club
-  const handleSaveClubSettings = async (updatedValues) => {
-    console.log('Guardando ajustes del club:', updatedValues);
-    try {
-      const formData = new FormData();
-
-      // Añadir los datos actualizados al FormData
-      formData.append('idClub', clubId); // Agrega el ID del club
-      for (const key in updatedValues) {
-        formData.append(key, updatedValues[key]);
-      }
-
-      // Si hay imágenes, agrégalas también
-      if (updatedValues.picture) {
-        formData.append('picture', updatedValues.picture);
-      }
-      if (updatedValues.banner) {
-        formData.append('banner', updatedValues.banner);
-      }
-
-      const response = await fetch(`http://localhost:8000/edit-club`, {
-        method: 'POST',
-        body: formData, // Cambia a FormData para permitir el envío de archivos
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const updatedClub = await response.json();
-        console.log('Club actualizado:', updatedClub);
-
-        // Actualizar el estado local de clubs
-        setClubs((prevClubs) =>
-          prevClubs.map((club) =>
-            club.IdClub === clubId ? updatedClub : club
-          )
-        );
-        alert('Ajustes del club actualizados correctamente.');
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al actualizar el club');
-      }
-    } catch (err) {
-      console.log('Error al guardar ajustes del club:', err);
-      console.log(`Error: ${err.message}`);
-    }
-  };
+  
 
 
   // Fetch de clubes de usuario
@@ -216,7 +172,7 @@ function Page({ params }) {
   }, [clubId]);
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return <div><SkeletonLoadingClub></SkeletonLoadingClub></div>;
   }
 
   if (error) {
@@ -226,7 +182,7 @@ function Page({ params }) {
   const club = clubs.find((club) => club.IdClub == params.id);
   if (!club) {
     // pongan algo mas bonito cuando no se encuentre lol
-    return <div>Club no encontrado</div>;
+    return <div><SkeletonLoadingClub></SkeletonLoadingClub></div>;
   }
 
   // Función para cambiar el tab activo
@@ -266,7 +222,7 @@ function Page({ params }) {
           {/* Banner */}
           <section className="bg-gray-200 h-32 rounded mb-8 flex items-center justify-center">
             {club?.Banner ? (
-              <img src={`http://localhost:8000/Uploads/${club.Banner}`} alt="Banner del Club" className="w-full h-full object-cover rounded" />
+              <img src={`http://localhost:8000/uploads/${club.Banner}`} alt="Banner del Club" className="w-full h-full object-cover rounded" />
             ) : (
               <p>No hay banner disponible</p>
             )}
@@ -276,7 +232,7 @@ function Page({ params }) {
           <section className="bg-white p-6 rounded shadow-md mb-8 relative">
             <div className="flex items-center">
               {club?.Picture ? (
-                <img src={`http://localhost:8000/Uploads/${club.Picture}`} alt="Foto del Club" className="w-16 h-16 rounded-full mr-4" />
+                <img src={`http://localhost:8000/uploads/${club.Picture}`} alt="Foto del Club" className="w-16 h-16 rounded-full mr-4" />
               ) : (
                 <div className="w-16 h-16 rounded-full bg-gray-300 mr-4 flex items-center justify-center">
                   <span className="text-gray-700">No Image</span>
@@ -396,7 +352,7 @@ function Page({ params }) {
             >
               &times;
             </button>
-            <AnuncioForm />
+            <AnuncioForm clubId={clubId} />
           </div>
         </div>
       )}
@@ -422,7 +378,7 @@ function Page({ params }) {
           isOpen={isClubSettingsOpen}
           onClose={toggleClubSettingsForm}
           clubData={club}
-          onSave={handleSaveClubSettings}
+          idClub={clubId}
         />
       )}
     </div>

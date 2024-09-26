@@ -45,6 +45,7 @@ const ClubForm = () => {
       const response = await fetch('http://localhost:8000/club', {
         method: 'POST',
         body: data,
+        credentials: 'include',
       });
 
       // Verificar si la respuesta es JSON o texto
@@ -52,7 +53,7 @@ const ClubForm = () => {
       let result;
 
       if (contentType && contentType.includes('application/json')) {
-        result = await response.json();
+        result = await response.text();
       } else {
         result = await response.text(); // Si no es JSON, obtener como texto
       }
