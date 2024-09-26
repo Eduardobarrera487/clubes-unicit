@@ -6,6 +6,7 @@ import AnuncioForm from "@/app/_components/formAnuncio";
 import EventoForm from "@/app/_components/formEvento";
 import EventoCard from "@/app/_components/eventoCard"; // Importar componente EventoCard
 import ClubSettingsForm from '@/app/_components/ClubSettingsForm'; // Importar ClubSettingsForm
+import AnnouncementsList from "@/app/_components/announcementList";
 //Si
 function Page({ params }) {
   const clubId = params.id;
@@ -324,7 +325,7 @@ function Page({ params }) {
 
             {/* Renderizado condicional de contenido basado en el tab activo */}
             <div>
-              {activeTab === "anuncios" && <p>Este es una prueba de anuncio</p>}
+              {activeTab === "anuncios" &&  <AnnouncementsList clubId={clubId} />}
               {activeTab === "informacion" && (
                 <div className="bg-white p-6 rounded shadow-md">
                   <h3 className="text-xl font-bold mb-4">Información del Club</h3>
